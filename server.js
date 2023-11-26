@@ -37,16 +37,16 @@ app.get("/signup", (req, res) => {
 
 // 회원가입 엔드포인트
 app.post('/signup', (req, res) => {
-  const { name, username, password,phone, email } = req.body;
+  const { name, id, password,phone, email } = req.body;
 
   // 간단한 유효성 검사 (필요한 경우 더 강력한 검사 수행)
-  if (!name || !username || !password || !phone || !email) {
+  if (!name || !id || !password || !phone || !email) {
     return res.status(400).send('모든 필드를 입력하세요.');
   }
 
   // 데이터베이스에 데이터 삽입
   const insertQuery = `INSERT INTO board (name, id, password,phone, email) VALUES (?, ?, ?, ?, ?)`;
-  connection.query(insertQuery, [name, username, password, phone, email], (err, result) => {
+  connection.query(insertQuery, [name, id, password, phone, email], (err, result) => {
     if (err) {
       console.error('Error inserting data:', err);
       return res.status(500).send('회원가입 중 오류가 발생했습니다.');
