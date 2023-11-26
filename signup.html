@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>경북 길라잡이 : 회원가입</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .container {
+            display: flex;
+            justify-content: center; /* 중앙 정렬 */
+            align-items: center;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            width: 700px;
+        }
+        .image-container {
+            width: 40%; /* 왼쪽 컨테이너 너비 조절 가능 */
+        }
+        .form-container {
+            width: 60%; /* 오른쪽 이미지 컨테이너 너비 조절 가능 */
+        }
+        input {
+            justify-content: center;
+            width: 60%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            width: 57%;
+        }
+        .error-message {
+            color: red;
+        }
+        .success-message {
+            color: green;
+        }
+        .input-group {
+            justify-content: center;
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .input-group label {
+            width: 0px;
+            text-align: right;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="image-container">
+            <a href="Main.html">
+                <img src="https://postfiles.pstatic.net/MjAyMzEwMTNfMjYw/MDAxNjk3MTYzNjcwMDYy.XPihVSwY_hfqEmHzfC0ToqtTn8FVtTvsFqmXfFzll94g.qHLCwIalJGLgLIH3TmP6WdFGhIxTDLHeAq0zM2cSbDMg.PNG.dnj1510/%EA%B2%BD%EB%B6%81_%EA%B8%B8%EB%9D%AC%EC%9E%A1%EC%9D%B4.png?type=w580" alt="로고">
+            </a>
+        </div>
+
+        <div class="form-container">
+            <h2>회원가입</h2>
+            <form id="signupForm" action='/singup' method="POST">
+                <div class="input-group">
+                    <label for="name"></label>
+                    <input type="text" id="name" name="name" placeholder="이름" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="username"></label>
+                    <input type="text" id="username" name="username" placeholder="아이디" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="password"></label>
+                    <input type="password" id="password" name="password" placeholder="비밀번호"required>
+                </div>
+
+                <div class="input-group">
+                    <label for="confirm_password"></label>
+                    <input type="password" id="confirm_password" name="confirm_password" placeholder="비밀번호 확인"required>
+                </div>
+                <div id="password_message" class="error-message"></div>
+
+                <div class="input-group">
+                    <label for="phone"></label>
+                    <input type="tel" id="phone" name="phone" placeholder="전화번호"required>
+                </div>
+
+                <div class="input-group">
+                    <label for="email"></label>
+                    <input type="email" id="email" name="email" placeholder="이메일"required>
+                </div>
+                
+                <div>
+                    <label for="submit"></label>
+                    <button type="button" id="submit_button" onclick="submitForm()" disabled>가입하기</button>
+                </div>
+                
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        function submitForm() {
+            const name = document.getElementById("name").value;
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirm_password").value;
+            const phone = document.getElementById("phone").value;
+            const email = document.getElementById("email").value;
+            const passwordMessage = document.getElementById("password_message").value;
+            // 필요한 경우 추가적인 유효성 검사를 수행합니다.
+    
+            // 폼 데이터를 가진 객체를 생성합니다.
+            const formData = {
+                name,
+                username,
+                password,
+                confirmPassword,
+                phone,
+                email
+            };
+    
+            // AJAX 또는 Fetch 요청을 사용하여 데이터를 서버에 전송합니다.
+            fetch('http://localhost:3000/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log(data);
+                // 서버의 응답을 처리합니다.
+            })
+            .catch(error => console.error('에러:', error));
+        }
+        document.getElementById("submit_button").removeAttribute("disabled")
+    </script>
+</body>
+</html>
