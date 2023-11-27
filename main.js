@@ -93,6 +93,16 @@ app.get("/main2.html", (req, res) => {
   res.sendFile(__dirname + "/main2.html");
 });
 
+// /MyPage html 폼 페이지 렌더링
+app.get("/mypage.html", (req, res) => {
+  res.sendFile(__dirname + "/mypage.html");
+});
+
+// /wishlist html 폼 페이지 렌더링
+app.get("/wishlist.html", (req, res) => {
+  res.sendFile(__dirname + "/wishlist.html");
+});
+
 // /serach.do 엔드포인트 핸들러
 app.post('/search.do', (req, res) => {
     const searchKeyword = req.body.title;
