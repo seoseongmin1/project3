@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>경북 길라잡이</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: #ffffff; /* 원하는 배경색 설정 */
+        }
+
+        .logo {
+            display: inline-block;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center; /* 수직 가운데 정렬 */
+            justify-content: center; /* 수평 가운데 정렬 */
+            background-color: #fff; /* 검색 박스 배경색 */
+            border: 1px solid #ccc; /* 검색 박스 테두리 */
+            padding: 10px;
+            max-width: 700px;
+            width: 100%;
+            margin-left: 50px;
+            border-radius: 10px;
+        }
+
+        #title {
+            border: none;
+            padding: 5px;
+            flex: 1; /* 나머지 공간을 채우도록 설정 */
+        }
+
+        #searchButton {
+            background-color: #ffffff; /* 검색 버튼 배경색 */
+            color: #fff; /* 검색 버튼 텍스트색 */
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .search-form {
+            display: flex;
+            flex: 1; /* 전체 공간을 차지하도록 설정 */
+        }
+
+        .buttons {
+            display: flex;
+            align-items: center;
+            margin-left: 120px;
+        }
+
+        .custom-button {
+            margin-left: 30px; /* 버튼 사이 간격 조정 */
+            width: 100px;
+            height: 50px;
+            border-radius: 10px;
+            border: #ffffff;
+            background-color: #ffffff;
+        }
+        .menu {
+            display: flex;
+            background-color: #ffffff;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-button {
+            background-color: #ffffff;
+            border: none;
+            padding: 10px;
+            margin: 0px;
+            cursor: pointer;
+            position: relative;
+            border: #ffffff;
+            font-size: larger;
+            font-family: Arial, sans-serif;
+            width: 140px;
+            height: 50px;
+            text-align: center;
+        }
+
+        .menu-description {
+            display: none;
+            position: fixed; /* 화면에 고정 */
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 10px;
+            top: 55%; /* 화면 상단에서 중앙으로 이동 */
+            left: 50%; /* 화면 왼쪽에서 중앙으로 이동 */
+            transform: translate(-50%, -50%); /* 수평 및 수직 가운데 정렬 */
+            width: 1512px; /* 원하는 너비 설정 */
+            height: 300px;
+        }   
+
+        /* .menu-description {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 10px;
+            top: 85px; /* 설명란을 버튼 아래에 배치 
+            left: 0;
+            width: 1500px;
+            height: 300px;
+            justify-content: center;
+        } */
+
+        .menu-button:hover .menu-description {
+            display: block;
+        }
+        .map {
+            display: flex;
+            justify-content: center; /* 수평 가운데 정렬 */
+            align-items: center; /* 수직 가운데 정렬 */
+        }
+
+        .card-wrapper {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 20px;
+            border: 1px solid transparent; /* .card-wrapper 테두리 설정 */
+            border-radius: 10px; /* .card-wrapper 모서리 둥글게 설정 */
+            overflow: hidden; /* 테두리가 이미지와 겹치지 않도록 설정 */
+            position: relative; /* 상대 위치 설정 */
+            width: 1225.8px;
+            margin-left: 120px;
+        }
+
+        .card-slider {
+            display: flex;
+            gap: 30px;
+            transition: transform 0.3s ease; /* 슬라이드 효과를 위한 전환 속성 설정 */
+        }
+
+        .card {
+            width: 352px;
+            height: 427px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            border: 1px solid #000; /* 테두리 보이게 설정 */
+            border-radius: 10px; /* 모서리 둥글게 설정 */
+            overflow: hidden;
+        }
+
+        .card img {
+            width: 352px;
+            height: 283px;
+            object-fit: cover;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .card-description {
+            padding: 10px;
+            padding-bottom: 0;
+            margin-bottom: 0;
+            margin-top: 0;
+        }
+
+        .slider-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #ffffff;
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .slider-button:hover {
+            background: #ffffff;
+        }
+
+        .prev-button {
+            margin-top: 650px;
+            left: 10px;
+        }
+
+        .next-button {
+            margin-top: 650px;
+            right: 10px;
+        }
+
+        /* header {
+            text-align: center;
+            background-color: #fff;
+            color: #000000;
+            padding: 20px 0;
+        }
+
+        header h1 {
+            font-size: 36px;
+        }
+
+        header p {
+            font-size: 18px;
+        } */
+
+        section {
+            padding: 20px;
+            background-color: #fff;
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .destination-card, .attraction-card, .facility-card, .cafe-card {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin: 20px;
+            padding: 20px;
+            text-align: center;
+            justify-content: flex;
+        }
+
+        .destination-card img, .attraction-card img, .facility-card img, .cafe-card img {
+            max-width: 352px;
+            height: 283px;
+            border-radius: 5px;
+        }
+
+        h3 {
+            font-size: 20px;
+            margin: 10px 0;
+        }
+
+        p {
+            font-size: 16px;
+        }
+
+        a {
+            display: inline-block;
+            background-color: #ffffff;
+            color: #000000;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        footer {
+            text-align: center;
+            background-color: #aeada6;
+            color: #fff;
+            padding: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <a href="Main.html">
+                <img src="https://postfiles.pstatic.net/MjAyMzEwMTNfMjYw/MDAxNjk3MTYzNjcwMDYy.XPihVSwY_hfqEmHzfC0ToqtTn8FVtTvsFqmXfFzll94g.qHLCwIalJGLgLIH3TmP6WdFGhIxTDLHeAq0zM2cSbDMg.PNG.dnj1510/%EA%B2%BD%EB%B6%81_%EA%B8%B8%EB%9D%AC%EC%9E%A1%EC%9D%B4.png?type=w580" alt="로고">
+            </a>
+        </div>
+        <div class="search-container">
+            <form id="searchForm" name="searchForm" method="post" action="/search.do" class="search-form">
+                <input type="hidden" id="cate_top">
+                <input type="text" name="title" id="title" title="검색어 입력" placeholder="검색어를 입력하세요" class="flex-1">
+                <button type="submit" id="searchButton">
+                    <img src="https://postfiles.pstatic.net/MjAyMzExMDVfMjkw/MDAxNjk5MTc2ODE4MjY1.ip9TlhvhZz4ZCGy8tKMO6vKr-3kOG8T-Zy5MBXG6Yogg.zVE42yT4Hf3MUp96DK93HZOmDslaj_YV0W2uJ0Z7QEUg.PNG.dnj1510/search.png?type=w580" alt="검색">
+                </button>
+            </form>
+        </div>
+        
+        <div class="buttons">
+            <button class="custom-button"><a href="">위시리스트</a></button>
+            <button class="custom-button"><a href="">마이페이지</a></button>
+            <button class="custom-button"><a href="main.html">로그아웃</a></button>
+        </div>
+    </div>
+    <div class="menu">
+        <div class="menu-button">
+            맛집
+            <div class="menu-description">맛집을 탐험하세요.</div>
+        </div>
+        <div class="menu-button">
+            문화
+            <div class="menu-description">문화적인 장소를 발견하세요.</div>
+        </div>
+        <div class="menu-button">
+            체험
+            <div class="menu-description">다양한 체험을 즐겨보세요.</div>
+        </div>
+        <div class="menu-button">
+            자연
+            <div class="menu-description">자연의 아름다움을 느끼세요.</div>
+        </div>
+        <div class="menu-button">
+            교통
+            <div class="menu-description">교통 정보를 확인하세요.</div>
+        </div>
+    </div>
+    <div class="map">
+        <img src="https://postfiles.pstatic.net/MjAyMzExMDlfMTA0/MDAxNjk5NDU4NzQzNjQw.aPAfHz9dpF1Dayj96d6V_KEzlKi_iB4EvTupiUMNQGUg.kgENwjvWVvYL6iPyUHdeWhBNKwdyS9q6iZ0slg9gH3Yg.PNG.dnj1510/%EC%A7%80%EB%8F%84.png?type=w580">
+    </div>
+
+    <section id="travel-destinations">
+        <h2>경상북도의 주요 여행지</h2>
+        <div class="slider-button prev-button" onclick="slideCards(-1)">
+            <img src="https://postfiles.pstatic.net/MjAyMzExMDhfMTQw/MDAxNjk5Mzc5NzE3NzEy.Ve3u7Q-6qj7W-APViyGHAKndT-nURqb8-4pDRFE6ZuEg.2tmPIkgHi0cMSUrZOROwBM4YFc9RttRuFkt6XkbuzX0g.PNG.dnj1510/left_arrow.png?type=w580">
+        </div>
+    <div class="card-wrapper">
+        <div class="card-slider">
+          <a href="">
+            <div class="card">
+                <div class="card-content">
+                    <img src="https://postfiles.pstatic.net/MjAyMzExMDVfMjk1/MDAxNjk5MTc4NjYyMDU3.TNJrjKOqamm3aq6E-047AO0szi22OWRimuvIVCDIrDgg.5R3q85brAXDYUm4Nwgi3hZ_5O1cZNbpXTBiePv8K5AQg.JPEG.dnj1510/%EC%8A%A4%ED%8E%98%EC%9D%B4%EC%8A%A4%EC%9B%8C%ED%81%AC.jpg?type=w580" alt="스페이스워크">
+                    <div class="card-description">
+                        <h1>스페이스워크</h1>
+                    </div>
+                    <div class="card-description">
+                        <h1 style="font-size: 13px;">경북 포항시 북구 환호공원길 30<br>054-270-5178</h1>
+                    </div>
+                </div>
+            </div>
+          </a>
+          <a href="">
+            <div class="card">
+                <div class="card-content">
+                    <img src="https://postfiles.pstatic.net/MjAyMzExMDVfMjIw/MDAxNjk5MTc4NjY3NjE4.LhYooMPeodgj72PHuHaopsay3_RvGdMSAIEM2Gu3M9Yg.9FkvAeR5oUDS9kp3VdOSX1A9MI2BU8M2Olz0aM6Eu9Qg.JPEG.dnj1510/%EC%9D%80%EC%96%B4%EB%8B%A4%EB%A6%AC.jpg?type=w580" alt="은어다리">
+                    <div class="card-description">
+                        <h1>은어다리</h1>
+                    </div>
+                    <div class="card-description">
+                        <h1 style="font-size: 13px;">경북 울진군 근남면 수산리 178-2<br>054-789-6903</h1>
+                    </div>
+                </div>
+            </div>
+          </a>
+          <a href="">
+            <div class="card">
+                <div class="card-content">
+                    <img src="https://postfiles.pstatic.net/MjAyMzExMDVfMjE0/MDAxNjk5MTc4NzE0MDYz.d149_WDpa4GfBlEbWqRrb-aQiX-iA3zALfQougNWJMIg.mlGSyBHM_pY1yCPUTzRRtqAujQoATZ2PwdWO3SzJAcUg.JPEG.dnj1510/%ED%99%80%EB%A6%EA%B0%EB%93%A0.jpg?type=w580" alt="홀리가든">
+                    <div class="card-description">
+                        <h1>홀리가든</h1>
+                    </div>
+                    <div class="card-description">
+                        <h1 style="font-size: 13px;">경북 봉화군 명호면 비나리길 172-47<br>010-7470-5881</h1>
+                    </div>
+                </div>
+            </div>
+          </a>
+          <a href="">
+            <div class="card">
+                <div class="card-content">
+                    <img src="https://postfiles.pstatic.net/MjAyMzExMDVfMTky/MDAxNjk5MTc4NzIxMDE1.erVzo5TL1OSHCTUsHGda62ZGbrA-e951YnzV6zErgPQg.fuXSvF7Jxtv7Ig1blqFH4zK05rHSXu6X55RN8n-X4e8g.JPEG.dnj1510/%EB%9F%AC%EB%B8%EB%9E%91.jpg?type=w580" alt="러블랑">
+                    <div class="card-description">
+                        <h1>러블랑</h1>
+                    </div>
+                    <div class="card-description">
+                        <h1 style="font-size: 13px;">경북 포항시 북구 송라면 동해대로 3310<br>054-261-3535</h1>
+                    </div>
+                </div>
+            </div> 
+          </a>
+          <a href="">
+            <div class="card">
+                <div class="card-content">
+                    <img src="https://postfiles.pstatic.net/MjAyMzExMDVfMTA3/MDAxNjk5MTc4NzI2MTY4.WPJIJRWnFpzZDMB3LjaIWtq7AhjNlCPsXMFCcBoK0SIg.d2BfYOcBpUP4oyzp8X44t5pvQjZ3-f3taKj37vfXpJMg.JPEG.dnj1510/%EB%A5%B4%EC%B9%B8%EB%A7%90%EB%A6%AC.jpg?type=w580" alt="르카페말리">
+                    <div class="card-description">
+                        <h1>르카페말리(LE CAFÉ MARLI)</h1>
+                    </div>
+                    <div class="card-description">
+                        <h1 style="font-size: 13px;">경북 울진군 죽변면 죽변중앙로 32<br>053-781-5292</h1>
+                    </div>
+                </div>
+            </div>
+          </a>
+          <a href="">
+            <div class="card">
+                <div class="card-content">
+                    <img src="https://postfiles.pstatic.net/MjAyMzExMDVfODEg/MDAxNjk5MTc4NzI5NTU0.M8CgFtKQlLxs9giq4hxvAUn5d_ngZKFACVkMlZGmctkg.FgshO815kD4QRY1B2bY-pKGGb9209dJGB0zJGUeIWrwg.JPEG.dnj1510/%EC%95%ED%8F%EB%A0%88.jpg?type=w580" alt="안포레">
+                    <div class="card-description">
+                        <h1>안포레</h1>
+                    </div>
+                    <div class="card-description">
+                        <h1 style="font-size: 13px;">경북 경산시 자인변 원효로 757-5<br>053-857-1234</h1>
+                    </div>
+                </div>
+            </div>
+          </a>
+          <a href="">
+            <div class="card">
+                <div class="card-content">
+                    <img src="https://postfiles.pstatic.net/MjAyMzExMDVfMjUy/MDAxNjk5MTc4NzM5Nzgy.MeI6CPM4Nb2-ufJI9YhotuYsloxbMeEYgbjFkg9WY6sg.osbbFkK8sWCXBXwBsdXmB1S_VmX5pAou574XFIsPy-cg.JPEG.dnj1510/%EC%B9%B4%ED%8E%EB%B0%80.jpg?type=w580" alt="카페 밀">
+                    <div class="card-description">
+                        <h1>카페 밀</h1>
+                    </div>
+                    <div class="card-description">
+                        <h1 style="font-size: 13px;">경북 김천시 대항면 직지사길 130<br>.</h1>
+                    </div>
+                </div>
+            </div>
+          </a>
+        </div>
+    </div>
+    <div class="slider-button next-button" onclick="slideCards(1)">
+        <img src="https://postfiles.pstatic.net/MjAyMzExMDhfMTYy/MDAxNjk5Mzc5NzIxODY2.ssi_7XCRxCaP12izqWxst_EAcD3ETaKlUtNX6G-blb0g.1Me2aCKa9RTnL38lJn7SYpe82GgXA60Pqahemm0Hj38g.PNG.dnj1510/right_arrow.png?type=w580">
+    </div>
+    </section>
+
+    <section id="tourist-attractions">
+        <h2>인기 관광지</h2>
+        <div class="attraction-card">
+            <img src="image3.jpg" alt="관광지 1">
+            <h3>관광지 1</h3>
+            <p>설명</p>
+            <a href="#">더 알아보기</a>
+        </div>
+        <div class="attraction-card">
+            <img src="image4.jpg" alt="관광지 2">
+            <h3>관광지 2</h3>
+            <p>설명</p>
+            <a href="#">더 알아보기</a>
+        </div>
+        <!-- 다른 관광지 카드들 추가 -->
+    </section>
+
+    <section id="culture-facilities">
+        <h2>문화시설</h2>
+        <div class="facility-card">
+            <img src="image5.jpg" alt="문화시설 1">
+            <h3>문화시설 1</h3>
+            <p>설명</p>
+            <a href="#">더 알아보기</a>
+        </div>
+        <div class="facility-card">
+            <img src="image6.jpg" alt="문화시설 2">
+            <h3>문화시설 2</h3>
+            <p>설명</p>
+            <a href="#">더 알아보기</a>
+        </div>
+        <!-- 다른 문화시설 카드들 추가 -->
+    </section>
+
+    <section id="cafes">
+        <h2>카페</h2>
+        <div class="cafe-card">
+            <img src="image7.jpg" alt="카페 1">
+            <h3>카페 1</h3>
+            <p>설명</p>
+            <a href="#">더 알아보기</a>
+        </div>
+        <div class="cafe-card">
+            <img src="image8.jpg" alt="카페 2">
+            <h3>카페 2</h3>
+            <p>설명</p>
+            <a href="#">더 알아보기</a>
+        </div>
+        <!-- 다른 카페 카드들 추가 -->
+    </section>
+
+    <footer>
+        <p>경상북도를 탐험하세요!</p>
+    </footer>
+
+    <script>
+        var currentSlide = 0; // 현재 슬라이드 인덱스
+
+        function slideCards(direction) {
+            const cardSlider = document.querySelector('.card-slider');
+            currentSlide += direction;
+            // 슬라이드 이동 범위 설정
+            if (currentSlide < 0) {
+                currentSlide = 0;
+            } else if (currentSlide > cardSlider.children.length - 3) {
+                currentSlide = cardSlider.children.length - 3;
+            }
+            const slidePosition = -currentSlide * 423.6 + 'px';
+            cardSlider.style.transform = 'translateX(' + slidePosition + ')';
+        }
+    </script>
+</body>
+</html>
