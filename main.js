@@ -3,8 +3,7 @@ const multer = require("multer");
 const upload = multer({ dest: "/uploadFile" });
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
-
-
+const validator = require('validator');
 
 const app = express();
 const PORT = 3000;
@@ -173,9 +172,6 @@ app.post('/findpw', (req, res) => {
     console.log('비밀번호 찾기 요청 받음');
     const { username } = req.body;
 
-
-
-
     const selectQuery = 'SELECT password FROM board WHERE username=?';
     connection.query(selectQuery, [username], (err, result) => {
         if (err) {
@@ -204,7 +200,11 @@ app.post('/signup', (req, res) => {
 
     // 간단한 유효성 검사 (필요한 경우 더 강력한 검사 수행)
     if (!name || !username || !password || !phone || !email) {
-        return res.status(400).send('모든 필드를 입력하세요.');
+      return res.status(400).send('모든 필드를 올바르게 입력하세요.');
+    }
+
+    if (!validator.isEmail(email)) {
+      return res.status(400).send('올바른 이메일 주소를 입력하세요.');
     }
 
     // 데이터베이스에 데이터 삽입
@@ -215,7 +215,7 @@ app.post('/signup', (req, res) => {
             return res.status(500).send('회원가입 중 오류가 발생했습니다.');
         }
         console.log('Registration successful');
-        return res.status(200).send('회원가입이 완료되었습니다.');
+        res.redirect('/login.html');
     });
 });
 
