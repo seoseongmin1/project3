@@ -1,25 +1,27 @@
 const express = require('express');
+const multer = require("multer");
+const upload = multer({ dest: "/uploadFile" });
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
-const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
+
+
 
 const app = express();
 const PORT = 3000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(require('express-session')({ secret: 'tj26484827!', resave: true, saveUninitialized: true }));
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(express.json());
 
+// MySQL 연결 설정
 const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'tj26484827!!',
-    database: 'db_test'
-});
+    host: "localhost",
+    user: "root",
+    password: "skagk2fl",
+    database: "my_db",
+  });
 
+// MySQL 연결
 connection.connect((err) => {
     if (err) {
         console.error('Error connecting to MySQL:', err);
@@ -28,45 +30,50 @@ connection.connect((err) => {
     console.log('Connected to MySQL');
 });
 
+// 구글연동
+// const passport = require('passport');
+// const GoogleStrategy = require('passport-google-oauth20').Strategy;
+// app.use(passport.initialize());
+// app.use(passport.session());
+// app.use(require('express-session')({ secret: 'tj26484827!', resave: true, saveUninitialized: true }));
 // 사용자 정보를 세션에 저장
-passport.serializeUser((user, done) => {
-    done(null, user);
-});
+// passport.serializeUser((user, done) => {
+//     done(null, user);
+// });
 
-// 세션에서 사용자 정보 가져오기
-passport.deserializeUser((obj, done) => {
-    done(null, obj);
-});
+// // 세션에서 사용자 정보 가져오기
+// passport.deserializeUser((obj, done) => {
+//     done(null, obj);
+// });
 
-passport.use(new GoogleStrategy({
-    clientID: 'tjtjdals4827@gmail.com',
-    clientSecret: 'tj26484827!',
-    callbackURL: 'http://localhost:3000/auth/google/callback',
-},
-    (accessToken, refreshToken, profile, done) => {
-        // Google 로그인 성공 시의 동작
-        return done(null, profile);
-    }));
+// passport.use(new GoogleStrategy({
+//     clientID: 'tjtjdals4827@gmail.com',
+//     clientSecret: 'tj26484827!',
+//     callbackURL: 'http://localhost:3000/auth/google/callback',
+// },
+//     (accessToken, refreshToken, profile, done) => {
+//         // Google 로그인 성공 시의 동작
+//         return done(null, profile);
+//     }));
 
-// Google 로그인 요청 처리
-app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+// // Google 로그인 요청 처리
+// app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-// Google 로그인 후 콜백 처리
-app.get('/auth/google/callback',
-    passport.authenticate('google', { failureRedirect: '/' }),
-    (req, res) => {
-        res.redirect('/');
-    }
-);
-
-// 로그인된 사용자 정보 확인
-app.get('/', (req, res) => {
-    if (req.isAuthenticated()) {
-        res.send(`Hello, ${req.user.displayName}!`);
-    } else {
-        res.send('Hello, guest!');
-    }
-});
+// // Google 로그인 후 콜백 처리
+// app.get('/auth/google/callback',
+//     passport.authenticate('google', { failureRedirect: '/' }),
+//     (req, res) => {
+//         res.redirect('/');
+//     }
+// );
+// 로그인된 사용자 정보 확인(구글연동)
+// app.get('/nowUser', (req, res) => {
+//     if (req.isAuthenticated()) {
+//         res.send(`Hello, ${req.user.displayName}!`);
+//     } else {
+//         res.send('Hello, guest!');
+//     }
+// });
 
 // 로그아웃
 app.get('/logout', (req, res) => {
@@ -74,12 +81,34 @@ app.get('/logout', (req, res) => {
     res.redirect('/');
 });
 
-// /signup 엔드포인트 핸들러
+// /Main,.HTML 폼 페이지 렌더링
 app.get("/main.html", (req, res) => {
     res.sendFile(__dirname + "/main.html");
 });
+// /Main,.HTML 폼 페이지 렌더링
+app.get("/", (req, res) => {
+    res.sendFile(__dirname + "/main.html");
+});
 
-// login html 폼 페이지 렌더링
+
+// /serach.do 엔드포인트 핸들러
+app.post('/search.do', (req, res) => {
+    const searchKeyword = req.body.title;
+  
+    // MySQL 쿼리 실행
+    const query = `SELECT * FROM touristspots WHERE spot_name LIKE '%${searchKeyword}%'`;
+  
+    connection.query(query, (err, results) => {
+      if (err) {
+        console.error('MySQL query error: ', err);
+        res.status(500).send('Internal Server Error');
+      } else {
+        res.json(results);
+      }
+    });
+  });
+
+// /login html 폼 페이지 렌더링
 app.get("/login.html", (req, res) => {
     res.sendFile(__dirname + "/login.html");
 });
@@ -114,8 +143,6 @@ app.get("/findid", (req, res) => {
 app.post('/findid', (req, res) => {
     console.log('아이디 찾기 요청 받음');
     const { name, phone } = req.body;
-
-
 
     // 실제로는 데이터베이스에서 조회하는 쿼리를 사용해야 합니다.
     // 여기서는 가상의 데이터베이스로 대체합니다.
@@ -192,7 +219,103 @@ app.post('/signup', (req, res) => {
     });
 });
 
-// 서버 리스닝
+// /touristspots 엔드포인트 핸들러
+app.get("/touristspots", (req, res) => {
+    // MySQL 쿼리: TouristSpots 테이블의 모든 정보를 선택
+    const query = "SELECT * FROM TouristSpots";
+    
+    // 쿼리 실행
+    connection.query(query, (error, results) => {
+      if (error) {
+        res.status(500).send("Internal Server Error");
+        throw error;
+      }
+      
+      // 쿼리 결과를 JSON 형태로 응답
+      res.json(results);
+    });
+  });
+
+// addspot HTML 폼 페이지 렌더링
+app.get("/addspot.html", (req, res) => {
+    res.sendFile(__dirname + "/addspot.html");
+  });
+  
+  // /addspot 엔드포인트 핸들러
+  app.post("/addspot", upload.single("image_data"), (req, res) => {
+    const {
+      spot_name,
+      location,
+      phone_number,
+      description,
+      category,
+      rating,
+      opening_hours,
+      entry_fee,
+      website_url,
+    } = req.body;
+  
+    const image_data = req.file.path; // 이미지 파일의 경로
+  
+    const query = `INSERT INTO TouristSpots (spot_name, location, phone_number, description, 
+          category, rating, opening_hours, entry_fee, website_url, image_data) 
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`; 
+  
+    connection.query(
+      query,
+      [
+        spot_name,
+        location,
+        phone_number,
+        description,
+        category,
+        rating,
+        opening_hours,
+        entry_fee,
+        website_url,
+        image_data,
+      ],
+      (error, results) => {
+        if (error) {
+          res.status(500).send("Internal Server Error");
+          throw error;
+        }
+  
+        res.send("Spot added successfully!");
+      }
+    );
+  });
+
+// /spot/:spot_id 엔드포인트 핸들러
+app.get("/spot/:spot_id", (req, res) => {
+    const spot_id = req.params.spot_id;
+  
+    // MySQL 쿼리: 특정 spot_id에 대한 정보를 선택
+    const query = "SELECT * FROM TouristSpots WHERE spot_id = ?";
+  
+    // 쿼리 실행
+    connection.query(query, [spot_id], (error, results) => {
+      if (error) {
+        res.status(500).send("Internal Server Error");
+        throw error;
+      }
+  
+      // 결과가 없는 경우 404 에러를 보냄
+      if (results.length === 0) {
+        res.status(404).send("Spot not found");
+        return;
+      }
+  
+      // EJS 템플릿을 렌더링하여 HTML로 응답
+      res.render("spotdetails", { spot: results[0] });
+    });
+  });
+  
+// EJS 설정
+app.set("view engine", "ejs");
+app.set("views", __dirname + "/views");
+
+  // 서버 리스닝
 app.listen(PORT, () => {
     console.log(`서버가 http://localhost:${PORT}/main.html 에서 실행 중입니다.`);
 });
