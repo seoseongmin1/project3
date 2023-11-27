@@ -1,0 +1,98 @@
+<!-- find-username.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>비밀번호 찾기</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            width: 500px;
+        }
+        .user-info {
+            flex: 1;
+            text-align: middle;
+            margin: 20px;
+        }
+        input[type="text"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="user-info">
+            <h2>비밀번호 찾기</h2>
+            <form id="findpwForm">
+                <label for="username">아이디:</label>
+                <input type="text" id="username" name="username" required>
+                <br>
+                
+                <!-- 변경된 부분: onclick 이벤트를 findpw 함수로 변경 -->
+                <button type="button" onclick="findpw()">비밀번호 찾기</button>
+
+            </form>
+        </div>
+    </div>
+
+    <script>
+        async function findpw() {
+            const username = document.getElementById("username").value;
+            
+
+            try {
+                const response = await fetch('http://localhost:3000/findpw', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username }),
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    // 변경된 부분: 찾은 비밀번호를 알림창에 표시
+                    alert(`찾은 비밀번호: ${data.password}`);
+                } else {
+                    const errorData = await response.json();
+                    console.error('비밀번호 찾기 실패:', errorData.message);
+                    // 비밀번호 찾기 실패 시 원하는 동작 수행
+                }
+            } catch (error) {
+                console.error('에러:', error);
+                // 네트워크 오류 등으로 인한 실패 시 원하는 동작 수행
+            }
+        }
+    </script>
+</body>
+</html>

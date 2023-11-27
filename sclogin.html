@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      text-align: center;
+    }
+
+    .login-button {
+      background-color: #4285F4;
+      color: white;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Social Login</h2>
+    <button class="login-button" onclick="redirectToGoogle()">Login with Google</button>
+  </div>
+
+  <script>
+    function redirectToGoogle() {
+      // 실제로는 서버 측에서 OAuth 프로토콜을 처리해야 합니다.
+      // 여기서는 단순히 Google 로그인 페이지로 리다이렉트하는 URL을 사용합니다.
+      window.location.href = 'http://localhost:3000/auth/google';
+    }
+  </script>
+</body>
+</html>
