@@ -136,6 +136,73 @@ app.get("/wishlist.html", (req, res) => {
   res.sendFile(__dirname + "/wishlist.html");
 });
 
+// wishlist 추가 API
+app.post("/addToWishlist", (req, res) => {
+  const { username, spot_name } = req.body;
+
+  // 이미 Wishlist에 추가되어 있는지 확인
+  const checkQuery = `SELECT * FROM Wishlist WHERE username = ? AND spot_name = ?`;
+  connection.query(checkQuery, [username, spot_name], (checkError, checkResults) => {
+    if (checkError) {
+      console.error("Error checking wishlist:", checkError);
+      res.status(500).json({ success: false });
+    } else {
+      if (checkResults.length > 0) {
+        // 이미 추가된 경우
+        res.json({ success: false, message: '이미 Wishlist에 추가된 관광지입니다.' });
+      } else {
+        // Wishlist에 추가
+        const insertQuery = `INSERT INTO Wishlist (username,spot_name) VALUES (?, ?)`;
+        connection.query(insertQuery, [username,spot_name], (insertError, insertResults) => {
+          if (insertError) {
+            console.error("Error adding to wishlist:", insertError);
+            res.status(500).json({ success: false });
+          } else {
+            res.json({ success: true });
+          }
+        });
+      }
+    }
+  });
+});
+
+// wishlist 불러오기 API
+app.get("/wishlist/:username", (req, res) => {
+  const username = req.params.username;
+
+  const selectQuery = `
+    SELECT w.username, t.spot_name
+    FROM Wishlist w
+    INNER JOIN TouristSpots t ON w.spot_name = t.spot_name
+    WHERE w.username = ?
+  `;
+
+  connection.query(selectQuery, [username], (error, results) => {
+    if (error) {
+      console.error("Error getting wishlist:", error);
+      res.status(500).json([]);
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+// wishlist 항목 제거 API
+app.delete("/removeFromWishlist", (req, res) => {
+  const { spot_name } = req.body;
+
+  // Wishlist에서 제거
+  const deleteQuery = `DELETE FROM Wishlist WHERE spot_name = ?`;
+  connection.query(deleteQuery, [spot_name], (error, results) => {
+    if (error) {
+      console.error("Error removing from wishlist:", error);
+      res.status(500).json({ success: false });
+    } else {
+      res.json({ success: true });
+    }
+  });
+});
+
 // /serach.do 엔드포인트 핸들러
 app.post("/search.do", (req, res) => {
   const searchKeyword = req.body.title;
