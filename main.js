@@ -352,11 +352,6 @@ app.get("/signup.html", (req, res) => {
 app.post("/signup", (req, res) => {
   const { name, username, password, phone, email } = req.body;
 
-  // 간단한 유효성 검사 (필요한 경우 더 강력한 검사 수행)
-  if (!name || !username || !password || !phone || !email) {
-    return res.status(400).send("모든 필드를 입력하세요.");
-  }
-
   // 데이터베이스에 데이터 삽입
   const insertQuery = `INSERT INTO board (name, username, password, phone, email) VALUES (?, ?, ?, ?, ?)`;
   connection.query(
@@ -368,7 +363,7 @@ app.post("/signup", (req, res) => {
         return res.status(500).send("회원가입 중 오류가 발생했습니다.");
       }
       console.log("Registration successful");
-      return res.status(200).send("회원가입이 완료되었습니다.");
+      res.sendFile(__dirname + "/main.html")
     }
   );
 });
