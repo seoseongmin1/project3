@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>경북길라잡이 : 고객센터</title>
+    <!-- 부트스트랩 CDN 링크 -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: #ffffff; /* 원하는 배경색 설정 */
+        }
+
+        .logo {
+            display: inline-block;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center; /* 수직 가운데 정렬 */
+            justify-content: center; /* 수평 가운데 정렬 */
+            background-color: #fff; /* 검색 박스 배경색 */
+            border: 1px solid #ccc; /* 검색 박스 테두리 */
+            padding: 10px;
+            max-width: 700px;
+            width: 100%;
+            margin-left: 50px;
+            border-radius: 10px;
+        }
+
+        #title {
+            border: none;
+            padding: 5px;
+            flex: 1; /* 나머지 공간을 채우도록 설정 */
+        }
+
+        #searchButton {
+            background-color: #ffffff; /* 검색 버튼 배경색 */
+            color: #fff; /* 검색 버튼 텍스트색 */
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .search-form {
+            display: flex;
+            flex: 1; /* 전체 공간을 차지하도록 설정 */
+        }
+
+        .buttons {
+            display: flex;
+            align-items: center;
+            margin-left: 120px;
+            text-decoration: none;
+            color: #000000;
+        }
+
+        .custom-button {
+            margin-left: 30px; /* 버튼 사이 간격 조정 */
+            width: 100px;
+            height: 50px;
+            border-radius: 10px;
+            border: #ffffff;
+            background-color: #ffffff;
+            color: #000000;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <a href="Main.html">
+                <img src="https://postfiles.pstatic.net/MjAyMzEwMTNfMjYw/MDAxNjk3MTYzNjcwMDYy.XPihVSwY_hfqEmHzfC0ToqtTn8FVtTvsFqmXfFzll94g.qHLCwIalJGLgLIH3TmP6WdFGhIxTDLHeAq0zM2cSbDMg.PNG.dnj1510/%EA%B2%BD%EB%B6%81_%EA%B8%B8%EB%9D%AC%EC%9E%A1%EC%9D%B4.png?type=w580" alt="로고">
+            </a>
+        </div>
+        <div class="search-container">
+            <form id="searchForm" name="searchForm" method="post" action="/search.do" class="search-form">
+                <input type="hidden" id="cate_top">
+                <input type="text" name="title" id="title" title="검색어 입력" placeholder="검색어를 입력하세요" class="flex-1">
+                <button type="submit" id="searchButton">
+                    <img src="https://postfiles.pstatic.net/MjAyMzExMDVfMjkw/MDAxNjk5MTc2ODE4MjY1.ip9TlhvhZz4ZCGy8tKMO6vKr-3kOG8T-Zy5MBXG6Yogg.zVE42yT4Hf3MUp96DK93HZOmDslaj_YV0W2uJ0Z7QEUg.PNG.dnj1510/search.png?type=w580" alt="검색">
+                </button>
+            </form>
+        </div>
+        
+        <div class="buttons">
+            <button class="custom-button"><a href="/Wishlist.html">위시리스트</a></button>
+            <button class="custom-button"><a href="/MyPage.html">마이페이지</a></button>
+            <button class="custom-button" id="logoutBtn" style="display: none">
+                <a href="/logout">로그아웃</a>
+              </button>
+              <button class="custom-button" id="loginBtn">
+                <a href="/login.html">로그인</a>
+            <button class="custom-button"><a href="/cs.html">고객센터</a></button>
+        </div>
+    </div>
+
+    <div class="container form-container">
+        <h1>고객센터</h1>
+
+        <!-- 문의 폼 -->
+        <form id="inquiryForm">
+            <div class="form-group" id="loginStatus">
+            <!-- 여기에 로그인 상태에 따른 UI 변경 로직이 들어갑니다. -->
+            </div>
+            <div class="form-group">
+                <label for="email">이메일:</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="useSameEmail" onchange="toggleEmailInput()">
+                    <label class="form-check-label" for="useSameEmail">고객정보와 동일한 이메일 사용</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="subject">문의 제목:</label>
+                <input type="text" class="form-control" id="subject" name="subject" required>
+            </div>
+            <div class="form-group">
+                <label for="message">문의 내용:</label>
+                <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="submitInquiry()">문의 제출</button>
+        </form>
+    </div>
+
+<!-- 부트스트랩 및 jQuery CDN 링크 -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<!-- 사용자 정의 스크립트 -->
+<script>
+    // 문의 제출 함수
+    function submitInquiry() {
+        var name = $('#name').val();
+        var email = $('#email').val();
+        var subject = $('#subject').val();
+        var message = $('#message').val();
+
+        // 사용자가 동일한 이메일을 사용할 경우
+        if ($('#useSameEmail').is(':checked')) {
+            // 여기에서 서버로부터 사용자 정보를 가져오는 로직이 들어갑니다.
+            // 예를 들어, 서버 API를 호출하여 현재 로그인된 사용자의 정보를 가져올 수 있습니다.
+            // 그리고 이 정보를 사용하여 이메일 필드를 자동으로 채웁니다.
+            var userInfo = { email: 'user@example.com' }; // 예시 데이터
+            $('#email').val(userInfo.email);
+            $('#email').prop('disabled', true); // 이메일 입력 비활성화
+        } else {
+            $('#email').prop('disabled', false); // 이메일 입력 활성화
+        }
+
+        // AJAX를 사용하여 서버로 데이터 전송
+        $.ajax({
+            type: 'POST',
+            url: '/submit_inquiry', // 실제 서버 엔드포인트로 수정해야 함
+            data: { name: name, email: email, subject: subject, message: message },
+            success: function (response) {
+                alert('문의가 성공적으로 제출되었습니다.');
+                // 성공적으로 제출한 후에 추가적인 동작이 필요하면 여기에 코드 추가
+            },
+            error: function (error) {
+                alert('문의 제출 중 오류가 발생하였습니다.');
+            }
+        });
+    }
+
+    // 체크박스 상태에 따라 이메일 입력 칸 활성화/비활성화
+    function toggleEmailInput() {
+        if ($('#useSameEmail').is(':checked')) {
+            $('#email').prop('disabled', true);
+        } else {
+            $('#email').prop('disabled', false);
+        }
+    }
+
+    // 여기에서 로그인 상태 체크 및 UI 변경 로직을 추가합니다.
+    function checkLoginStatus() {
+        fetch("/currentUser")
+          .then((response) => response.json())
+          .then((data) => {
+            const user = data.username;
+
+            // 여기에서 user 상태에 따라 버튼을 표시/숨김 처리
+            if (user) {
+              document.getElementById("logoutBtn").style.display = "block";
+              document.getElementById("loginBtn").style.display = "none";
+            } else {
+              document.getElementById("logoutBtn").style.display = "none";
+              document.getElementById("loginBtn").style.display = "block";
+            }
+          })
+          .catch((error) => {
+            console.error("Error checking login status:", error);
+          });
+      }
+
+      // 페이지 로드 시 사용자 로그인 상태 확인
+      window.onload = checkLoginStatus;
+</script>
+</body>
+</html>
