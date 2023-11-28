@@ -117,14 +117,18 @@ app.get("/main.html", (req, res) => {
   res.sendFile(__dirname + "/main.html");
 });
 
-// /MyPage html 폼 페이지 렌더링
-app.get("/mypage.html", (req, res) => {
-  res.sendFile(__dirname + "/mypage.html");
-  const user = req.session.user;
 
+app.get("/cs.html", (req, res) => {
+  res.sendFile(__dirname + "/cs.html");
+});
+
+// /MyPage html 폼 페이지 렌더링
+app.get("/myPage.html", (req, res) => {
+  const user = req.session.user;
+  
   if (user) {
     // 로그인된 사용자인 경우
-    res.send(`Welcome to your MyPage, ${user.username}!`);
+    res.sendFile(__dirname + "/mypage.html");
   } else {
     // 로그인되지 않은 사용자인 경우
     res.redirect("/login.html"); // 또는 다른 로그인 페이지로 이동
