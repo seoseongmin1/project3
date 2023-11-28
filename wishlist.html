@@ -1,0 +1,118 @@
+<!-- wishlist.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wishlist</title>
+</head>
+
+<body>
+  <h1>Wishlist</h1>
+
+  <div id="touristspots-container">
+    <!-- TouristSpots에서 가져온 관광지 목록이 여기에 나타납니다 -->
+  </div>
+
+  <div id="wishlist-container">
+    <!-- Wishlist에 추가된 항목들이 여기에 나타납니다 -->
+  </div>
+
+  <script>
+    // 현재 로그인된 사용자 정보 확인
+    const getCurrentUser = async () => {
+      const response = await fetch('/currentUser');
+      const data = await response.json();
+      return data.username;
+    };
+
+    // 관광지를 Wishlist에 추가하는 함수
+    const addToWishlist = async (spot_name) => {
+      const currentUser = await getCurrentUser();
+      const response = await fetch('/addToWishlist', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',   
+        },
+        body: JSON.stringify({
+          username: currentUser,
+          spot_name: spot_name,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert('Wishlist에 추가되었습니다!');
+        // Wishlist 목록을 다시 불러와서 갱신
+        loadWishlist();
+      } else {
+        alert(data.message || '추가에 실패했습니다.');
+      }
+    };
+
+    // Wishlist 목록을 불러와서 표시하는 함수
+    const loadWishlist = async () => {
+      const currentUser = await getCurrentUser();
+      const response = await fetch(`/wishlist/${currentUser}`);
+      const wishlistData = await response.json();
+
+      const wishlistContainer = document.getElementById('wishlist-container');
+      wishlistContainer.innerHTML = '';
+
+      wishlistData.forEach(item => {
+        const listItem = document.createElement('div');
+        listItem.innerHTML = `<p>${item.spot_name} <button onclick="removeFromWishlist('${item.spot_name}')">Remove</button></p>`;
+        wishlistContainer.appendChild(listItem);
+      });
+    };
+
+    // 관광지 목록을 불러와서 표시하는 함수
+    const loadTouristSpots = async () => {
+      const response = await fetch('/touristspots');
+      const touristSpotsData = await response.json();
+
+      const touristspotsContainer = document.getElementById('touristspots-container');
+      touristspotsContainer.innerHTML = '';
+
+      touristSpotsData.forEach(spot => {
+        const spotItem = document.createElement('div');
+        spotItem.innerHTML = `<p>${spot.spot_name} <button onclick="addToWishlist('${spot.spot_name}')">Add to Wishlist</button></p>`;
+        touristspotsContainer.appendChild(spotItem);
+      });
+    };
+
+    // Wishlist에서 항목을 제거하는 함수
+    const removeFromWishlist = async (spot_name) => {
+      const response = await fetch('/removeFromWishlist', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          spot_name: spot_name,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert('Wishlist에서 제거되었습니다!');
+        // Wishlist 목록을 다시 불러와서 갱신
+        loadWishlist();
+      } else {
+        alert('제거에 실패했습니다.');
+      }
+    };
+
+    // 페이지 로드 시 관광지 목록과 Wishlist 목록을 불러와서 표시
+    window.onload = () => {
+      loadTouristSpots();
+      loadWishlist();
+    };
+  </script>
+</body>
+
+</html>
