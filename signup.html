@@ -175,6 +175,14 @@
       const emailErrorMessage = document.getElementById("email_error_message");
 
       confirmPassword.addEventListener("input", function () {
+        updatePasswordMatchStatus();
+      });
+
+      password.addEventListener("input", function () {
+        updatePasswordMatchStatus();
+      });
+
+      function updatePasswordMatchStatus() {
         if (password.value === confirmPassword.value) {
           passwordMessage.textContent = "비밀번호가 일치합니다.";
           passwordMessage.classList.remove("error-message");
@@ -186,9 +194,12 @@
           passwordMessage.classList.add("error-message");
           submitButton.disabled = true;
         }
-      });
+      }
 
       function checkForm() {
+        // 이메일 형식 검증 추가
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+
         if (
           nameInput.value.trim() !== "" &&
           username.value.trim() !== "" &&
@@ -196,23 +207,15 @@
           confirmPassword.value.trim() !== "" &&
           phone.value.trim() !== "" &&
           email.value.trim() !== "" &&
+          emailRegex.test(email.value.trim()) && // 이메일 형식 검증 추가
           password.value === confirmPassword.value
         ) {
+          alert("회원가입이 완료되었습니다!");
           return true;
         } else {
-          alert("모든 필드를 입력하고 비밀번호가 일치하는지 확인하세요.");
+          alert("모든 필드를 입력하고 올바른 이메일 주소를 사용하세요.");
           return false;
         }
-      }
-
-      submitButton.addEventListener("click", function (event) {
-        if (!checkForm()) {
-          event.preventDefault(); // 폼 제출을 막음
-        }
-      });
-
-      function alertMessage(){
-        alert("회원가입이 완료됐습니다.");
       }
     </script>
   </body>
