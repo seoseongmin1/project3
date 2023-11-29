@@ -117,15 +117,34 @@ app.get("/main.html", (req, res) => {
   res.sendFile(__dirname + "/main.html");
 });
 
-
 app.get("/cs.html", (req, res) => {
   res.sendFile(__dirname + "/cs.html");
+});
+
+// /submit_inquiry 엔드포인트 핸들러
+app.post("/submit_inquiry", (req, res) => {
+  const { username, email, subject, message } = req.body;
+
+  // qna 테이블에 데이터 삽입
+  const insertQuery = `INSERT INTO qna (username, email, subject, message) VALUES (?, ?, ?, ?)`;
+  connection.query(
+    insertQuery,
+    [username, email, subject, message],
+    (err, result) => {
+      if (err) {
+        console.error("Error inserting data:", err);
+        res.status(500).send("문의 제출 중 오류가 발생했습니다.");
+      } else {
+        res.json({ success: true });
+      }
+    }
+  );
 });
 
 // /MyPage html 폼 페이지 렌더링
 app.get("/myPage.html", (req, res) => {
   const user = req.session.user;
-  
+
   if (user) {
     // 로그인된 사용자인 경우
     res.sendFile(__dirname + "/mypage.html");
@@ -146,28 +165,39 @@ app.post("/addToWishlist", (req, res) => {
 
   // 이미 Wishlist에 추가되어 있는지 확인
   const checkQuery = `SELECT * FROM Wishlist WHERE username = ? AND spot_name = ?`;
-  connection.query(checkQuery, [username, spot_name], (checkError, checkResults) => {
-    if (checkError) {
-      console.error("Error checking wishlist:", checkError);
-      res.status(500).json({ success: false });
-    } else {
-      if (checkResults.length > 0) {
-        // 이미 추가된 경우
-        res.json({ success: false, message: '이미 Wishlist에 추가된 관광지입니다.' });
+  connection.query(
+    checkQuery,
+    [username, spot_name],
+    (checkError, checkResults) => {
+      if (checkError) {
+        console.error("Error checking wishlist:", checkError);
+        res.status(500).json({ success: false });
       } else {
-        // Wishlist에 추가
-        const insertQuery = `INSERT INTO Wishlist (username,spot_name) VALUES (?, ?)`;
-        connection.query(insertQuery, [username,spot_name], (insertError, insertResults) => {
-          if (insertError) {
-            console.error("Error adding to wishlist:", insertError);
-            res.status(500).json({ success: false });
-          } else {
-            res.json({ success: true });
-          }
-        });
+        if (checkResults.length > 0) {
+          // 이미 추가된 경우
+          res.json({
+            success: false,
+            message: "이미 Wishlist에 추가된 관광지입니다.",
+          });
+        } else {
+          // Wishlist에 추가
+          const insertQuery = `INSERT INTO Wishlist (username,spot_name) VALUES (?, ?)`;
+          connection.query(
+            insertQuery,
+            [username, spot_name],
+            (insertError, insertResults) => {
+              if (insertError) {
+                console.error("Error adding to wishlist:", insertError);
+                res.status(500).json({ success: false });
+              } else {
+                res.json({ success: true });
+              }
+            }
+          );
+        }
       }
     }
-  });
+  );
 });
 
 // wishlist 불러오기 API
@@ -363,7 +393,7 @@ app.post("/signup", (req, res) => {
         return res.status(500).send("회원가입 중 오류가 발생했습니다.");
       }
       console.log("Registration successful");
-      res.sendFile(__dirname + "/main.html")
+      res.sendFile(__dirname + "/main.html");
     }
   );
 });
