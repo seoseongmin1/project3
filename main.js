@@ -317,7 +317,7 @@ app.get("/findid.html", (req, res) => {
 });
 
 // 아이디 찾기 API
-app.post("/findid.html", (req, res) => {
+app.post("/findid", (req, res) => {
   console.log("아이디 찾기 요청 받음");
   const { name, phone } = req.body;
 
@@ -331,7 +331,7 @@ app.post("/findid.html", (req, res) => {
     } else {
       if (result.length > 0) {
         console.log("아이디 찾기 성공");
-        res.json({ message: "아이디 찾기 성공", username: result[0].username });
+        res.json({ message: "아이디 찾기 성공", ID: result[0].username });
       } else {
         console.log("아이디 찾기 실패");
         res
@@ -348,22 +348,21 @@ app.get("/findpw.html", (req, res) => {
 });
 
 // 비밀번호 찾기 API
-app.post("/findpw.html", (req, res) => {
-  res.sendFile(__dirname + "/findpw.html");
-  console.log("비밀번호 찾기 요청 받음");
+app.post("/findpw", (req, res) => {
+  console.log("아이디 찾기 요청 받음");
   const { username } = req.body;
-  const selectQuery = "SELECT password FROM board WHERE username=?";
+
+  // 실제로는 데이터베이스에서 조회하는 쿼리를 사용해야 합니다.
+  // 여기서는 가상의 데이터베이스로 대체합니다.
+  const selectQuery = "SELECT password FROM board WHERE username = ?";
   connection.query(selectQuery, [username], (err, result) => {
     if (err) {
-      console.error("Error querying user:", err);
+      console.error("Error querying id:", err);
       res.status(500).json({ message: "Internal Server Error" });
     } else {
       if (result.length > 0) {
         console.log("비밀번호 찾기 성공");
-        res.json({
-          message: "비밀번호 찾기 성공",
-          password: result[0].password,
-        });
+        res.json({ message: "비밀번호 찾기 성공", ID: result[0].password });
       } else {
         console.log("비밀번호 찾기 실패");
         res
