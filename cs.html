@@ -82,14 +82,30 @@
             </a>
         </div>
         <div class="search-container">
-            <form id="searchForm" name="searchForm" method="post" action="/search.do" class="search-form">
-                <input type="hidden" id="cate_top">
-                <input type="text" name="title" id="title" title="검색어 입력" placeholder="검색어를 입력하세요" class="flex-1">
-                <button type="submit" id="searchButton">
-                    <img src="https://postfiles.pstatic.net/MjAyMzExMDVfMjkw/MDAxNjk5MTc2ODE4MjY1.ip9TlhvhZz4ZCGy8tKMO6vKr-3kOG8T-Zy5MBXG6Yogg.zVE42yT4Hf3MUp96DK93HZOmDslaj_YV0W2uJ0Z7QEUg.PNG.dnj1510/search.png?type=w580" alt="검색">
-                </button>
+            <form
+              id="searchForm"
+              name="searchForm"
+              method="post"
+              onsubmit="submitForm(event)"
+              class="search-form"
+            >
+              <input type="hidden" id="cate_top" />
+              <input
+                type="text"
+                name="title"
+                id="title"
+                title="검색어 입력"
+                placeholder="검색어를 입력하세요"
+                class="flex-1"
+              />
+              <button type="submit" id="searchButton">
+                <img
+                  src="https://postfiles.pstatic.net/MjAyMzExMDVfMjkw/MDAxNjk5MTc2ODE4MjY1.ip9TlhvhZz4ZCGy8tKMO6vKr-3kOG8T-Zy5MBXG6Yogg.zVE42yT4Hf3MUp96DK93HZOmDslaj_YV0W2uJ0Z7QEUg.PNG.dnj1510/search.png?type=w580"
+                  alt="검색"
+                />
+              </button>
             </form>
-        </div>
+          </div>
         
         <div class="buttons">
             <button class="custom-button"><a href="/Wishlist.html">위시리스트</a></button>
@@ -133,6 +149,38 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 <!-- 사용자 정의 스크립트 -->
 <script>
+
+// 검색 폼 제출 시
+document.getElementById("searchForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    // 검색어 가져오기
+    const searchKeyword = document.getElementById("title").value;
+
+    // 입력이 없을 경우 경고 메시지 표시
+    if (!searchKeyword.trim()) {
+        alert("검색어를 입력하세요.");
+        return;
+    }
+
+    // 검색 요청 보내기
+    fetch("/search.do", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ title: searchKeyword }),
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        // 검색 결과를 받아와서 동적으로 UI에 추가
+        // 여기서는 결과를 search-result.html로 이동하는 방식으로 변경
+        window.location.href = `/search-result.html?results=${encodeURIComponent(JSON.stringify(data))}`;
+    })
+    .catch((error) => {
+        console.error("Error searching:", error);
+    });
+});
 // 문의 제출 함수
 function submitInquiry() {
     var email = $('#email').val();
