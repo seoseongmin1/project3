@@ -154,6 +154,70 @@ app.get("/myPage.html", (req, res) => {
   }
 });
 
+// /getUserInfo 엔드포인트 핸들러
+app.get("/getUserInfo", (req, res) => {
+  const user = req.session.user;
+
+  if (!user) {
+    res.status(401).json({ error: 'User not authenticated' });
+    return;
+  }
+
+  // 데이터베이스에서 사용자 정보를 조회
+  const query = `SELECT username, name, phone, email FROM board WHERE username = ?`;
+  connection.query(query, [user.username], (err, results) => {
+    if (err) {
+      console.error('Error querying user info:', err);
+      res.status(500).json({ error: 'Internal Server Error' });
+      return;
+    }
+
+    if (results.length === 0) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+
+    const userInfo = results[0];
+    res.json(userInfo);
+  });
+});
+
+app.post("/withdraw", async (req, res) => {
+  try {
+    // 현재 로그인된 사용자의 username 가져오기
+    const username = req.session.user.username;
+
+    // 트랜잭션 시작
+    await connection.beginTransaction();
+
+    // 각 테이블에서 해당 사용자의 데이터 삭제
+    await deleteFromTable("board", username);
+    await deleteFromTable("wishlist", username); 
+    await deleteFromTable("qna", username); 
+    // 여러 테이블에 대해 위와 같은 방식으로 추가
+
+    // 트랜잭션 커밋
+    await connection.commit();
+
+    // 세션 제거
+    req.session.destroy();
+
+    // 응답
+    res.json({ success: true, message: "회원 탈퇴가 완료되었습니다." });
+  } catch (error) {
+    // 트랜잭션 롤백
+    await connection.rollback();
+    console.error("Error withdrawing:", error);
+    res.status(500).json({ success: false, message: "회원 탈퇴 중 오류가 발생했습니다." });
+  }
+});
+
+async function deleteFromTable(table, username) {
+  // 각 테이블에서 해당 사용자의 데이터 삭제
+  const deleteQuery = `DELETE FROM ${table} WHERE username = ?`;
+  await connection.query(deleteQuery, [username]);
+}
+
 // /wishlist html 폼 페이지 렌더링
 app.get("/wishlist.html", (req, res) => {
   const user = req.session.user;
