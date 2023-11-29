@@ -132,44 +132,86 @@
     </div>
 
 <!-- 부트스트랩 및 jQuery CDN 링크 -->
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 <!-- 사용자 정의 스크립트 -->
 <script>
-    // 문의 제출 함수
-    function submitInquiry() {
-        var name = $('#name').val();
-        var email = $('#email').val();
-        var subject = $('#subject').val();
-        var message = $('#message').val();
+// 문의 제출 함수
+function submitInquiry() {
+    var email = $('#email').val();
+    var subject = $('#subject').val();
+    var message = $('#message').val();
 
-        // 사용자가 동일한 이메일을 사용할 경우
-        if ($('#useSameEmail').is(':checked')) {
-            // 여기에서 서버로부터 사용자 정보를 가져오는 로직이 들어갑니다.
-            // 예를 들어, 서버 API를 호출하여 현재 로그인된 사용자의 정보를 가져올 수 있습니다.
-            // 그리고 이 정보를 사용하여 이메일 필드를 자동으로 채웁니다.
-            var userInfo = { email: 'user@example.com' }; // 예시 데이터
-            $('#email').val(userInfo.email);
-            $('#email').prop('disabled', true); // 이메일 입력 비활성화
-        } else {
-            $('#email').prop('disabled', false); // 이메일 입력 활성화
-        }
+    // 사용자가 동일한 이메일을 사용할 경우
+    if ($('#useSameEmail').is(':checked')) {
+        // 여기에서 서버로부터 사용자 정보를 가져오는 로직이 들어갑니다.
+        // 예를 들어, 서버 API를 호출하여 현재 로그인된 사용자의 정보를 가져올 수 있습니다.
+        fetch("/currentUser")
+            .then(response => response.json())
+            .then(data => {
+                console.log(data); // 로그로 데이터 확인
+                if (data.email !== undefined && data.email !== null) {
+    // 이메일이 유효한 경우 폼에 사용자 정보를 자동으로 채움
+    $('#email').val(data.email);
+    $('#email').prop('disabled', true); // 이메일 입력 비활성화
 
-        // AJAX를 사용하여 서버로 데이터 전송
-        $.ajax({
-            type: 'POST',
-            url: '/submit_inquiry', // 실제 서버 엔드포인트로 수정해야 함
-            data: { name: name, email: email, subject: subject, message: message },
-            success: function (response) {
-                alert('문의가 성공적으로 제출되었습니다.');
-                // 성공적으로 제출한 후에 추가적인 동작이 필요하면 여기에 코드 추가
-            },
-            error: function (error) {
-                alert('문의 제출 중 오류가 발생하였습니다.');
-            }
-        });
+    saveInquiry(data.username, data.email, subject, message);
+} else {
+    // 이메일이 유효하지 않은 경우 예외 처리 또는 기본값 사용
+    console.error("Invalid email for the current user.");
+}
+            })
+            .catch(error => {
+                console.error("Error getting current user:", error);
+            });
+    } else {
+        // 체크되지 않은 경우 이메일 입력 활성화
+        $('#email').prop('disabled', false);
+
+        // 현재 세션에 로그인된 사용자의 정보를 가져와서 저장
+        fetch("/currentUser")
+            .then(response => response.json())
+            .then(data => {
+                saveInquiry(data.username, email, subject, message);
+            })
+            .catch(error => {
+                console.error("Error getting current user:", error);
+            });
     }
+}
+
+// 문의 정보를 서버에 저장
+function saveInquiry(username, email, subject, message) {
+    // AJAX를 사용하여 서버로 데이터 전송
+    $.ajax({
+        type: 'POST',
+        url: '/submit_inquiry', // 실제 서버 엔드포인트로 수정해야 함
+        data: { username: username, email: email, subject: subject, message: message },
+        success: function (response) {
+            alert('문의가 성공적으로 제출되었습니다.');
+            // 성공적으로 제출한 후에 추가적인 동작이 필요하면 여기에 코드 추가
+        },
+        error: function (error) {
+            alert('문의 제출 중 오류가 발생하였습니다.');
+        }
+    });
+}
+
+    //     // AJAX를 사용하여 서버로 데이터 전송
+    //     $.ajax({
+    //         type: 'POST',
+    //         url: '/submit_inquiry', // 실제 서버 엔드포인트로 수정해야 함
+    //         data: { name: name, email: email, subject: subject, message: message },
+    //         success: function (response) {
+    //             alert('문의가 성공적으로 제출되었습니다.');
+    //             // 성공적으로 제출한 후에 추가적인 동작이 필요하면 여기에 코드 추가
+    //         },
+    //         error: function (error) {
+    //             alert('문의 제출 중 오류가 발생하였습니다.');
+    //         }
+    //     });
+    // }
 
     // 체크박스 상태에 따라 이메일 입력 칸 활성화/비활성화
     function toggleEmailInput() {
