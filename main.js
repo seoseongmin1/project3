@@ -156,7 +156,14 @@ app.get("/myPage.html", (req, res) => {
 
 // /wishlist html 폼 페이지 렌더링
 app.get("/wishlist.html", (req, res) => {
+  const user = req.session.user;
+if (user) {
+  // 로그인된 사용자인 경우
   res.sendFile(__dirname + "/wishlist.html");
+} else {
+  // 로그인되지 않은 사용자인 경우
+  res.redirect("/login.html"); // 또는 다른 로그인 페이지로 이동
+}
 });
 
 // wishlist 추가 API
