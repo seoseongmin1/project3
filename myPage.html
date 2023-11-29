@@ -105,6 +105,14 @@
         padding: 50px;
       }
 
+      .changePassword {
+        list-style: none;
+      }
+      .changePassword a {
+        color: #7d7d7d;
+      }
+
+
       .withdraw {
         list-style: none;
       }
@@ -178,8 +186,9 @@
         <div class="userinfo">
           <h2>기본정보</h2>
           <p><strong>이름:</strong> <span id="name"></span></p>
-          <p><strong>전화번호:</strong> <span id="phoneNumber"></span></p>
+          <p><strong>전화번호:</strong> <span id="phone"></span></p>
           <p><strong>이메일:</strong> <span id="email"></span></p>
+          <p><strong>아이디:</strong> <span id="username"></span></p>
           <div class="withdraw">
             <li><a href="Withdraw">회원탈퇴></a></li>
           </div>
@@ -189,6 +198,14 @@
     <script>
       var currentSlide = 0; // 현재 슬라이드 인덱스
 
+  function displayUserInfo(userInfo) {
+    document.getElementById("name").textContent = userInfo.name;
+    document.getElementById("phone").textContent = userInfo.phone;
+    document.getElementById("email").textContent = userInfo.email;
+    document.getElementById("username").textContent = userInfo.username;
+    // 패스워드는 보안상 표시하지 않는 것이 좋습니다.
+  }
+      
       // 검색 폼 제출 시
 document.getElementById("searchForm").addEventListener("submit", function (event) {
     event.preventDefault();
@@ -231,6 +248,18 @@ document.getElementById("searchForm").addEventListener("submit", function (event
             if (user) {
               document.getElementById("logoutBtn").style.display = "block";
               document.getElementById("loginBtn").style.display = "none";
+              
+              // 유저 정보 가져오기
+            fetch("/getUserInfo")
+            .then((response) => response.json())
+            .then((userInfo) => {
+              // 가져온 정보를 표시
+              displayUserInfo(userInfo);
+            })
+            .catch((error) => {
+              console.error("Error getting user info:", error);
+            });
+           
             } else {
               document.getElementById("logoutBtn").style.display = "none";
               document.getElementById("loginBtn").style.display = "block";
