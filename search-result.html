@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
     <head>
         <meta charset="UTF-8">
@@ -112,19 +112,39 @@
                 </a>
             </div>
             <div class="search-container">
-                <form id="searchForm" name="searchForm" method="post" action="/search.do" class="search-form">
-                    <input type="hidden" id="cate_top">
-                    <input type="text" name="title" id="title" title="검색어 입력" placeholder="검색어를 입력하세요" class="flex-1">
-                    <button type="submit" id="searchButton">
-                        <img src="https://postfiles.pstatic.net/MjAyMzExMDVfMjkw/MDAxNjk5MTc2ODE4MjY1.ip9TlhvhZz4ZCGy8tKMO6vKr-3kOG8T-Zy5MBXG6Yogg.zVE42yT4Hf3MUp96DK93HZOmDslaj_YV0W2uJ0Z7QEUg.PNG.dnj1510/search.png?type=w580" alt="검색">
-                    </button>
+                <form
+                  id="searchForm"
+                  name="searchForm"
+                  method="post"
+                  onsubmit="submitForm(event)"
+                  class="search-form"
+                >
+                  <input type="hidden" id="cate_top" />
+                  <input
+                    type="text"
+                    name="title"
+                    id="title"
+                    title="검색어 입력"
+                    placeholder="검색어를 입력하세요"
+                    class="flex-1"
+                  />
+                  <button type="submit" id="searchButton">
+                    <img
+                      src="https://postfiles.pstatic.net/MjAyMzExMDVfMjkw/MDAxNjk5MTc2ODE4MjY1.ip9TlhvhZz4ZCGy8tKMO6vKr-3kOG8T-Zy5MBXG6Yogg.zVE42yT4Hf3MUp96DK93HZOmDslaj_YV0W2uJ0Z7QEUg.PNG.dnj1510/search.png?type=w580"
+                      alt="검색"
+                    />
+                  </button>
                 </form>
-            </div>
+              </div>
             
             <div class="buttons">
                 <button class="custom-button"><a href="Wishlist.html">위시리스트</a></button>
                 <button class="custom-button"><a href="MyPage.html">마이페이지</a></button>
-                <button class="custom-button"><a href="Login.html">로그인</a></button>
+                <button class="custom-button" id="logoutBtn" style="display: none">
+                    <a href="/logout">로그아웃</a>
+                  </button>
+                  <button class="custom-button" id="loginBtn">
+                    <a href="/login.html">로그인</a>
                 <button class="custom-button"><a href="CS.html">고객센터</a></button>
             </div>
         </div>
@@ -141,5 +161,105 @@
         <script>
             // 여기에 스크립트 넣어주시고 검색 결과 보여주시면 나머지 UI 수정할게요
             // 우선 검색결과는 100x100 으로 사진이 나오고 그 옆에 정보가 뜨도록 스타일 넣어놨어요
+    
+            // 페이지 로드 시 사용자 로그인 상태 확인
+            window.onload = function () {
+                // 검색 결과를 가져오기
+                const searchResults = getSearchResultsFromQueryString();
+                checkLoginStatus();
+                // 검색 결과를 받아와서 동적으로 UI에 추가
+                displaySearchResults(searchResults);
+            };
+    
+            // 검색 결과를 동적으로 UI에 추가하는 함수
+            function displaySearchResults(results) {
+                const searchResultsContainer = document.querySelector(".search-results");
+    
+                // 결과를 모두 지우고 새로운 결과 표시
+                searchResultsContainer.innerHTML = "";
+    
+                // 결과가 없을 경우 처리
+                if (!results || results.length === 0) {
+                    const noResultMessage = document.createElement("p");
+                    noResultMessage.textContent = "검색 결과가 없습니다.";
+                    searchResultsContainer.appendChild(noResultMessage);
+                } else {
+                    results.forEach((result) => {
+                        // 각 결과에 대한 HTML 생성
+                        const resultItem = document.createElement("div");
+                        resultItem.classList.add("result-item");
+    
+                        // 이미지 표시
+                        const image = document.createElement("img");
+                        image.src = result.image_url; // 이미지 URL을 가져오는 방식에 따라 수정 필요
+                        image.alt = result.spot_name; // 이미지 대체 텍스트 설정
+                        resultItem.appendChild(image);
+    
+                        // 정보 표시
+                        const info = document.createElement("div");
+                        info.innerHTML = `<h3>${result.spot_name}</h3><p>${result.description}</p>`;
+                        resultItem.appendChild(info);
+    
+                        // 결과를 컨테이너에 추가
+                        searchResultsContainer.appendChild(resultItem);
+                    });
+                }
+            }
+    
+            // URL에서 검색 결과 파라미터를 가져오는 함수
+            function getSearchResultsFromQueryString() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const resultsParam = urlParams.get("results");
+    
+                // URL 파라미터가 없거나 비어있으면 빈 배열 반환
+                if (!resultsParam) {
+                    return [];
+                }
+    
+                try {
+                    // JSON 문자열을 파싱하여 객체로 변환
+                    return JSON.parse(decodeURIComponent(resultsParam));
+                } catch (error) {
+                    console.error("Error parsing search results:", error);
+                    return [];
+                }
+            }
+    
+            function checkLoginStatus() {
+                // fetch("/currentUser") 생략
+                // 로그인 상태 확인과 관련된 부분은 변경하지 않았습니다.
+            }
+    
+            // 검색 폼 제출 시
+            document.getElementById("searchForm").addEventListener("submit", function (event) {
+                event.preventDefault();
+    
+                // 검색어 가져오기
+                const searchKeyword = document.getElementById("title").value;
+    
+                // 입력이 없을 경우 경고 메시지 표시
+                if (!searchKeyword.trim()) {
+                    alert("검색어를 입력하세요.");
+                    return;
+                }
+    
+                // 검색 요청 보내기
+                fetch("/search.do", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ title: searchKeyword }),
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        // 검색 결과를 받아와서 동적으로 UI에 추가
+                        // 여기서는 결과를 search-result.html로 이동하는 방식으로 변경
+                        window.location.href = `/search-result.html?results=${encodeURIComponent(JSON.stringify(data))}`;
+                    })
+                    .catch((error) => {
+                        console.error("Error searching:", error);
+                    });
+            });
         </script>
     </body>
