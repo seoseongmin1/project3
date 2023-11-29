@@ -53,7 +53,7 @@
     <div class="container">
         <div class="user-info">
             <h2>아이디 찾기</h2>
-            <form id="findusernameForm">
+            <form id="findusernameForm" action="/findid" method="POST">
                 <label for="name">이름:</label>
                 <input type="text" id="name" name="name" required>
                 <br>
@@ -62,7 +62,6 @@
                 <br>
                 <!-- 변경된 부분: onclick 이벤트를 findUsername 함수로 변경 -->
                 <button type="button" onclick="findusername()">아이디 찾기</button>
-
             </form>
         </div>
     </div>
@@ -71,7 +70,6 @@
         async function findusername() {
             const name = document.getElementById("name").value;
             const phone = document.getElementById("phone").value;
-
             try {
                 const response = await fetch('http://localhost:3000/findid', {
                     method: 'POST',
@@ -84,7 +82,7 @@
                 if (response.ok) {
                     const data = await response.json();
                     // 변경된 부분: 찾은 아이디를 알림창에 표시
-                    alert(`찾은 아이디: ${data.password}`);
+                    alert(`찾은 아이디: ${data.ID}`);
                 } else {
                     const errorData = await response.json();
                     console.error('아이디 찾기 실패:', errorData.message);
