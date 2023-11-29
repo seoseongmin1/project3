@@ -112,6 +112,28 @@
       loadTouristSpots();
       loadWishlist();
     };
+    var currentSlide = 0; // 현재 슬라이드 인덱스
+
+      function checkLoginStatus() {
+        fetch("/currentUser")
+          .then((response) => response.json())
+          .then((data) => {
+            const user = data.username;
+
+            // 여기에서 user 상태에 따라 버튼을 표시/숨김 처리
+            if (user) {
+              document.getElementById("logoutBtn").style.display = "block";
+              document.getElementById("loginBtn").style.display = "none";
+            } else {
+              document.getElementById("logoutBtn").style.display = "none";
+              document.getElementById("loginBtn").style.display = "block";
+            }
+          })
+          .catch((error) => {
+            console.error("Error checking login status:", error);
+          });
+      }
+    window.onload = checkLoginStatus;
   </script>
 </body>
 
