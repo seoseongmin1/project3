@@ -190,13 +190,46 @@
           <p><strong>이메일:</strong> <span id="email"></span></p>
           <p><strong>아이디:</strong> <span id="username"></span></p>
           <div class="withdraw">
-            <li><a href="Withdraw">회원탈퇴></a></li>
+            <li>
+              <button id="withdrawButton" onclick="confirmWithdraw()">회원탈퇴</button>
+            </li>
           </div>
         </div>
       </div>
     </div>
     <script>
       var currentSlide = 0; // 현재 슬라이드 인덱스
+
+      function confirmWithdraw() {
+    const confirmed = confirm("정말 회원탈퇴 하시겠습니까?");
+    
+    if (confirmed) {
+      withdrawUser();
+    }
+  }
+
+  function withdrawUser() {
+    fetch("/withdraw", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      // 서버로부터 받은 응답 처리
+      if (data.success) {
+        alert("회원탈퇴가 완료되었습니다.");
+        // 로그아웃 처리 또는 다른 페이지로 이동 등을 수행할 수 있습니다.
+        window.location.href = "/logout";
+      } else {
+        alert("회원탈퇴 중 오류가 발생했습니다.");
+      }
+    })
+    .catch((error) => {
+      console.error("Error withdrawing user:", error);
+    });
+  }
 
   function displayUserInfo(userInfo) {
     document.getElementById("name").textContent = userInfo.name;
