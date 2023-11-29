@@ -312,12 +312,12 @@ app.get("/currentUser", (req, res) => {
 });
 
 // 아이디 찾기 API
-app.get("/findid", (req, res) => {
+app.get("/findid.html", (req, res) => {
   res.sendFile(__dirname + "/findid.html");
 });
 
 // 아이디 찾기 API
-app.post("/findid", (req, res) => {
+app.post("/findid.html", (req, res) => {
   console.log("아이디 찾기 요청 받음");
   const { name, phone } = req.body;
 
@@ -343,12 +343,13 @@ app.post("/findid", (req, res) => {
 });
 
 // 비밀번호 찾기 API
-app.get("/findpw", (req, res) => {
+app.get("/findpw.html", (req, res) => {
   res.sendFile(__dirname + "/findpw.html");
 });
 
 // 비밀번호 찾기 API
-app.post("/findpw", (req, res) => {
+app.post("/findpw.html", (req, res) => {
+  res.sendFile(__dirname + "/findpw.html");
   console.log("비밀번호 찾기 요청 받음");
   const { username } = req.body;
   const selectQuery = "SELECT password FROM board WHERE username=?";
