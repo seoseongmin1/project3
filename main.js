@@ -6,6 +6,7 @@ const mysql = require("mysql");
 const session = require("express-session");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const axios = require("axios"); // axios를 추가
 
 const app = express();
 const PORT = 3000;
@@ -381,107 +382,65 @@ app.get("/loginCheck", (req, res) => {
   }
 });
 
-app.get("/logout", (req, res) => {
-  req.session.destroy();
-  res.redirect("/");
-});
-
-// 현재 로그인된 사용자 정보 확인
-app.get("/currentUser", (req, res) => {
-  const user = req.session.user;
-
-  if (user) {
-    res.json({ username: user.username });
-  } else {
-    res.json({ message: "No user logged in" });
-  }
-});
-
-// 아이디 찾기 API
-app.get("/findid.html", (req, res) => {
-  res.sendFile(__dirname + "/findid.html");
-});
-
-// 아이디 찾기 API
-app.post("/findid", (req, res) => {
-  console.log("아이디 찾기 요청 받음");
-  const { name, phone } = req.body;
-
-  // 실제로는 데이터베이스에서 조회하는 쿼리를 사용해야 합니다.
-  // 여기서는 가상의 데이터베이스로 대체합니다.
-  const selectQuery = "SELECT username FROM board WHERE name = ? AND phone = ?";
-  connection.query(selectQuery, [name, phone], (err, result) => {
-    if (err) {
-      console.error("Error querying user:", err);
-      res.status(500).json({ message: "Internal Server Error" });
-    } else {
-      if (result.length > 0) {
-        console.log("아이디 찾기 성공");
-        res.json({ message: "아이디 찾기 성공", ID: result[0].username });
-      } else {
-        console.log("아이디 찾기 실패");
-        res
-          .status(404)
-          .json({ message: "일치하는 사용자를 찾을 수 없습니다." });
-      }
-    }
-  });
-});
-
-// 비밀번호 찾기 API
-app.get("/findpw.html", (req, res) => {
-  res.sendFile(__dirname + "/findpw.html");
-});
-
-// 비밀번호 찾기 API
-app.post("/findpw", (req, res) => {
-  console.log("아이디 찾기 요청 받음");
-  const { username } = req.body;
-
-  // 실제로는 데이터베이스에서 조회하는 쿼리를 사용해야 합니다.
-  // 여기서는 가상의 데이터베이스로 대체합니다.
-  const selectQuery = "SELECT password FROM board WHERE username = ?";
-  connection.query(selectQuery, [username], (err, result) => {
-    if (err) {
-      console.error("Error querying id:", err);
-      res.status(500).json({ message: "Internal Server Error" });
-    } else {
-      if (result.length > 0) {
-        console.log("비밀번호 찾기 성공");
-        res.json({ message: "비밀번호 찾기 성공", ID: result[0].password });
-      } else {
-        console.log("비밀번호 찾기 실패");
-        res
-          .status(404)
-          .json({ message: "일치하는 사용자를 찾을 수 없습니다." });
-      }
-    }
-  });
-});
-
-// /signup 엔드포인트 핸들러
+app러
 app.get("/signup.html", (req, res) => {
-  res.sendFile(__dirname + "/signup.html");
+    res.sendFile(__dirname + "/signup.html");
 });
 
 // 회원가입 엔드포인트
-app.post("/signup", (req, res) => {
-  const { name, username, password, phone, email } = req.body;
+app.post("/signup", async (req, res) => { // async 키워드 추가
+    const { name, username, password, phone, email } = req.body;
 
-  // 데이터베이스에 데이터 삽입
-  const insertQuery = `INSERT INTO board (name, username, password, phone, email) VALUES (?, ?, ?, ?, ?)`;
-  connection.query(
-    insertQuery,
-    [name, username, password, phone, email],
-    (err, result) => {
-      if (err) {
-        console.error("Error inserting data:", err);
-        return res.status(500).send("회원가입 중 오류가 발생했습니다.");
-      }
-      console.log("Registration successful");
-      res.sendFile(__dirname + "/main.html");
+    // 중복 확인 API를 호출하여 아이디 중복 여부를 확인
+    const checkUsernameUrl = "http://localhost:3000/check-username";
+
+    try {
+        // 중복 확인 API에 POST 요청을 보내어 응답을 받음
+        const response = await axios.post(checkUsernameUrl, { username });
+        const data = response.data;
+
+        if (!data.available) {
+            // 아이디가 이미 존재하는 경우
+            res.status(400).json({ error: "아이디가 이미 존재합니다." });
+        } else {
+            // 아이디가 사용 가능한 경우, 회원가입 진행
+            const insertQuery = `INSERT INTO board (name, username, password, phone, email) VALUES (?, ?, ?, ?, ?)`;
+            connection.query(insertQuery, [name, username, password, phone, email], (err, result) => {
+                if (err) {
+                    console.error('Error inserting data:', err);
+                    res.status(500).json({ error: '회원가입 중 오류가 발생했습니다.' });
+                } else {
+                    console.log('Registration successful');
+                    res.status(200).json({ message: '회원가입이 완료되었습니다.' });
+                }
+            });
+        }
+    } catch (error) {
+        console.error('Error checking username:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-  );
+});
+
+// 사용자 이름 중복 확인 엔드포인트
+app.post("/check-username", (req, res) => {
+  const { username } = req.body;
+
+  // 데이터베이스에서 사용자 이름 확인
+  const query = "SELECT * FROM board WHERE username = ?";
+  connection.query(query, [username], (error, results) => {
+      if (error) {
+          console.error("MySQL query error: ", error);
+          res.status(500).json({ available: false });
+      } else {
+          if (results.length > 0) {
+              // 중복된 사용자 이름이 존재
+              res.json({ available: false });
+          } else {
+              // 사용 가능한 사용자 이름
+              res.json({ available: true });
+          }
+      }
+  });
 });
 
 // /touristspots 엔드포인트 핸들러
