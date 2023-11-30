@@ -325,10 +325,25 @@ app.post("/search.do", (req, res) => {
   });
 });
 
+app.get("/search-result.html", (req, res) => {
+  try {
+    // 검색 결과를 가져오는 로직
+    const searchKeyword = req.query.results; // 쿼리 파라미터로부터 검색 결과를 가져옴
+    const searchResults = JSON.parse(decodeURIComponent(searchKeyword));
+
+    // 검색 결과를 렌더링하여 클라이언트에 전송
+    res.render("search-result", { results: searchResults });
+  } catch (error) {
+    console.error("/search-result.html 라우트에서 오류 발생:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 // /login html 폼 페이지 렌더링
 app.get("/login.html", async function (req, res) {
   res.sendFile(__dirname + "/login.html");
 });
+
 
 // 로그인 API
 app.post("/login", (req, res) => {
