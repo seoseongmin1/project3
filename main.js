@@ -44,8 +44,8 @@ app.use(
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "skagk2fl",
-  database: "my_db",
+  password: "tj26484827!!",
+  database: "db_test",
 });
 
 // MySQL 연결
@@ -382,7 +382,6 @@ app.get("/loginCheck", (req, res) => {
   }
 });
 
-app러
 app.get("/signup.html", (req, res) => {
     res.sendFile(__dirname + "/signup.html");
 });
