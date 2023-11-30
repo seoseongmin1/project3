@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
   <head>
     <meta charset="UTF-8" />
     <title>경북 길라잡이 : 회원가입</title>
@@ -10,58 +10,70 @@
         text-align: center;
         margin: 0;
         padding: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         height: 100vh;
       }
+
       .container {
         display: flex;
-        justify-content: center; /* 중앙 정렬 */
+        flex-direction: column;
         align-items: center;
         background-color: #fff;
         border-radius: 5px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         padding: 20px;
-        width: 700px;
+        max-width: 700px;
+        margin: auto;
       }
+
       .image-container {
-        width: 40%; /* 왼쪽 컨테이너 너비 조절 가능 */
+        width: 100%;
       }
+
       .form-container {
-        width: 60%; /* 오른쪽 이미지 컨테이너 너비 조절 가능 */
+        width: 100%;
       }
+
       input {
-        justify-content: center;
-        width: 60%;
+        width: 100%;
         padding: 12px 20px;
         margin: 8px 0;
         box-sizing: border-box;
       }
+
       button {
         background-color: #4caf50;
         color: white;
         border: none;
         padding: 10px 20px;
         cursor: pointer;
-        width: 57%;
+        width: 100%;
       }
-      .error-message {
-        color: red;
-      }
-      .success-message {
-        color: green;
-      }
+
       .input-group {
-        justify-content: center;
         display: flex;
+        flex-direction: column;
         align-items: center;
         margin-bottom: 10px;
       }
+
       .input-group label {
-        width: 0px;
-        text-align: right;
-        margin-right: 10px;
+        width: 100%;
+        text-align: left;
+        margin-bottom: 5px;
+      }
+
+      #name {
+        width: 100%;
+        margin-right: 0px;
+        text-align: left;
+      }
+
+      .error-message {
+        color: red;
+      }
+
+      .success-message {
+        color: green;
       }
     </style>
   </head>
@@ -75,96 +87,70 @@
           />
         </a>
       </div>
+
       <div class="form-container">
         <h2>회원가입</h2>
         <form id="signupForm" action="/signup" method="POST">
           <div class="input-group">
-            <label for="name"></label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              placeholder="이름"
-              required
-            />
+            <label for="name">이름</label>
+            <input type="text" id="name" name="name" placeholder="이름" required />
           </div>
+
           <div class="input-group">
-            <label for="username"></label>
-            <input
-              type="text"
-              id="username"
-              name="username"
-              placeholder="아이디"
-              required
-            />
-          </div>
+            <label for="username">아이디</label>
+            <input type="text" id="username" name="username" placeholder="아이디" required />
+            <button type="button" id="checkUsernameButton" onclick="checkUsernameAvailability()">
+              중복 확인
+            </button>
+
+            <p id="usernameAvailabilityMessage"></p>
+            <div id="usernameAvailabilityError" class="error-message"></div>
+
           <div class="input-group">
-            <label for="password"></label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              placeholder="비밀번호"
-              required
-            />
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" name="password" placeholder="비밀번호" required />
           </div>
+
           <div class="input-group">
-            <label for="confirm_password"></label>
-            <input
-              type="password"
-              id="confirm_password"
-              name="confirm_password"
-              placeholder="비밀번호 확인"
-              required
-            />
+            <label for="confirm_password">비밀번호 확인</label>
+            <input type="password" id="confirm_password" name="confirm_password" placeholder="비밀번호 확인" required />
+            <div id="password_message" class="error-message"></div>
           </div>
-          <div id="password_message" class="error-message"></div>
+
           <div class="input-group">
-            <label for="phone"></label>
-            <input
-              type="tel"
-              id="phone"
-              name="phone"
-              placeholder="전화번호"
-              required
-            />
+            <label for="phone">전화번호</label>
+            <input type="tel" id="phone" name="phone" placeholder="전화번호" required />
           </div>
+
           <div class="input-group">
-            <label for="email"></label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="이메일"
-              required
-            />
+            <label for="email">이메일</label>
+            <input type="email" id="email" name="email" placeholder="이메일" required />
+            <div id="email_error_message" class="error-message"></div>
           </div>
-          <div id="email_error_message" class="error-message"></div>
+
           <div>
-            <label for="submit"></label>
-            <button
-              type="submit"
-              id="submit_button"
-              onclick="alertMessage()"
-              disabled
-            >
+            <button type="button" id="submit_button" onclick="registerUser()">
               가입하기
             </button>
           </div>
         </form>
       </div>
     </div>
+
     <script>
       const nameInput = document.getElementById("name");
       const username = document.getElementById("username");
+      const checkUsernameButton = document.getElementById("checkUsernameButton");
+      
       const password = document.getElementById("password");
-      const confirmPassword = document.getElementById("confirm_password");
+      const confirmPassword = document.getElementById("confirm_password"); // 수정된 부분
       const phone = document.getElementById("phone");
       const email = document.getElementById("email");
       const passwordMessage = document.getElementById("password_message");
       const submitButton = document.getElementById("submit_button");
       const emailErrorMessage = document.getElementById("email_error_message");
 
+      
       confirmPassword.addEventListener("input", function () {
         updatePasswordMatchStatus();
       });
@@ -172,17 +158,60 @@
       password.addEventListener("input", function () {
         updatePasswordMatchStatus();
       });
+      async function checkUsernameAvailability() {
+  const username = document.getElementById("username").value;
+  const usernameAvailabilityMessage = document.getElementById("usernameAvailabilityMessage");
+  const usernameAvailabilityError = document.getElementById("usernameAvailabilityError");
 
+  if (username.trim() === "") {
+    usernameAvailabilityMessage.textContent = "";
+    usernameAvailabilityError.textContent = "아이디를 입력하세요.";
+    return;
+  }
+
+  try {
+    // 서버에서 아이디 중복 확인
+    const response = await fetch('http://localhost:3000/check-username', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username }),
+    });
+
+    const isAvailable = await response.json();
+
+    if (isAvailable.available) {
+      usernameAvailabilityMessage.textContent = "사용 가능한 아이디입니다.";
+      usernameAvailabilityError.textContent = "";
+    } else {
+      usernameAvailabilityMessage.textContent = "";
+      usernameAvailabilityError.textContent = "이미 사용 중인 아이디입니다.";
+    }
+  } catch (error) {
+    console.error("Error checking username availability:", error);
+    usernameAvailabilityMessage.textContent = "";
+    usernameAvailabilityError.textContent = "서버 오류가 발생했습니다.";
+  }
+}
       function updatePasswordMatchStatus() {
+        // passwordMessage를 정의하고 초기화
+        const passwordMessage = document.getElementById("password_message");
+
         if (password.value === confirmPassword.value) {
           passwordMessage.textContent = "비밀번호가 일치합니다.";
           passwordMessage.classList.remove("error-message");
-@@ -186,34 +194,29 @@ <h2>회원가입</h2>
+          passwordMessage.classList.add("success-message");
+          submitButton.disabled = false;
+        } else {
+          passwordMessage.textContent = "비밀번호가 일치하지 않습니다.";
+          passwordMessage.classList.remove("success-message");
           passwordMessage.classList.add("error-message");
           submitButton.disabled = true;
         }
-      });
       }
+
+      
 
       function checkForm() {
         // 이메일 형식 검증 추가
@@ -199,23 +228,67 @@
           password.value === confirmPassword.value
         ) {
           alert("회원가입이 완료되었습니다!");
+          console.log('Redirecting to login.html...');
+          window.location.href='login.html'; // 로그인 페이지로 이동
           return true;
         } else {
-          alert("모든 필드를 입력하고 비밀번호가 일치하는지 확인하세요.");
           alert("모든 필드를 입력하고 올바른 이메일 주소를 사용하세요.");
           return false;
         }
       }
+      async function registerUser() {
+     const name = nameInput.value;
+    const usernameValue = username.value;
+    const passwordValue = password.value;
+    const confirmPasswordValue = confirmPassword.value;
+    const phoneValue = phone.value;
+    const emailValue = email.value;
 
-      submitButton.addEventListener("click", function (event) {
-        if (!checkForm()) {
-          event.preventDefault(); // 폼 제출을 막음
-        }
+    if (passwordValue !== confirmPasswordValue) {
+      document.getElementById('password_message').innerText = '비밀번호가 일치하지 않습니다.';
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:3000/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          username: usernameValue,
+          password: passwordValue,
+          phone: phoneValue,
+          email: emailValue,
+        }),
       });
 
-      function alertMessage(){
-        alert("회원가입이 완료됐습니다.");
+      const data = await response.json();
+      console.log('Response data:', data);
+
+      if (response.ok) {
+        // 서버로부터의 응답 처리
+        alert(data.message); // 가입 완료 메시지 표시
+        if (data.success) {
+          // 가입이 성공했을 경우, 다른 동작 수행
+          alert("회원가입이 완료되었습니다!");
+          console.log('Redirecting to login.html...');
+          window.location.href='login.html';
+          
+        }
+      } else {
+        // 서버에서 에러 응답을 받은 경우
+        console.error('Server Error:', data.error);
+        alert('회원가입 중 오류가 발생했습니다.');
       }
+    } catch (error) {
+      // fetch 자체에서 발생한 오류 처리
+      console.error('Error during fetch:', error);
+      alert('네트워크 오류가 발생했습니다.');
+    }
+  }
+      
     </script>
   </body>
 </html>
