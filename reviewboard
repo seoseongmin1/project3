@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>리뷰게시판</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .review-board-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .review {
+            margin-bottom: 16px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="review-board-container">
+        <h1>리뷰게시판</h1>
+        <div id="reviewBoard"></div>
+
+        <!-- JavaScript 코드는 여기에 추가 -->
+        <script>
+            // 리뷰 목록을 가져와서 리뷰게시판에 표시하는 함수
+            async function fetchReviews() {
+                try {
+                    const response = await fetch('/api/reviews');
+                    const reviews = await response.json();
+
+                    const reviewBoard = document.getElementById("reviewBoard");
+                    reviewBoard.innerHTML = '';
+
+                    reviews.forEach(review => {
+                        const reviewElement = document.createElement("div");
+                        reviewElement.classList.add("review");
+                        reviewElement.innerHTML = `<strong>${review.placeName}</strong>: ${review.reviewText}, 별점: ${review.rating}`;
+                        reviewBoard.appendChild(reviewElement);
+                    });
+
+                } catch (error) {
+                    console.error('Error fetching reviews:', error);
+                }
+            }
+            // 서버에서 리뷰 목록을 가져와서 표시하는 함수
+  async function loadReviews() {
+    const response = await fetch('/api/reviews2');
+    const reviews = await response.json();
+
+    // 리뷰 목록을 reviewBoard 요소에 추가
+    const reviewBoardElement = document.getElementById('reviewBoard');
+    reviews.forEach(review => {
+      const reviewElement = document.createElement('div');
+      reviewElement.classList.add('review');
+      reviewElement.innerHTML = `
+        <h3>${review.placeName}</h3>
+        <p>${review.reviewText}</p>
+        <p>평점: ${review.rating}</p>
+      `;
+      reviewBoardElement.appendChild(reviewElement);
+  });
+  }
+            // 초기 로드 시 리뷰게시판 업데이트
+            fetchReviews();
+        </script>
+    </div>
+</body>
+
+</html>
