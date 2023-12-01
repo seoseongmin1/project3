@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>경북 길라잡이</title>
+
+    <style>
+        body {
+            font-family: '맑은고딕', sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+	    display: center;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: #ffffff;
+            font-family: '궁서체', sans-serif;
+        }
+
+        /* 메인 페이지의 배너 스타일 */
+        .main-banner {
+            text-align: center;
+            background-color: #F2E4BF;
+            padding: 30px;
+            color: #333;
+        }
+
+        /* 메인 페이지의 검색창 스타일 */
+        .search-container {
+            display: flex;
+            align-items: center;
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            padding: 10px;
+            max-width: 700px;
+            width: 100%;
+            margin-left: 50px;
+            border-radius: 10px;
+        }
+
+        /* 나머지 공통 스타일은 여기에 추가 */
+
+        /* 교통 페이지 특별한 스타일은 여기에 추가 */
+
+        /* 추가된 네모 스타일 */
+        .icon-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+            position: relative; /* 추가된 부분: 상대 위치 설정 */
+        }
+
+        .icon {
+            width: 300px; /* 수정된 부분: 크기를 크게 조절 */
+            height: 700px; /* 수정된 부분: 크기를 크게 조절 */
+            margin: 0 10px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            position: relative; /* 추가된 부분: 상대 위치 설정 */
+        }
+
+        .icon img {
+            width: 100px;
+            height: 100px;
+        }
+
+         
+        .icon-text {
+            position: absolute;
+            left: -80px; /* 수정된 부분: 텍스트의 위치 조절 */
+            font-weight: bold;
+        }
+
+
+        #transportation {
+            text-align: center;
+            margin-top: 200px; /* 수정된 부분: 교통 정보와의 간격을 조절 */
+        }
+
+        /* 추가된 스타일 */
+        .transportation-rectangle {
+            width: 50%; /* 수정된 부분: 직사각형의 너비를 조절 */
+            height: 150px; /* 수정된 부분: 직사각형의 높이를 조절 */
+            background-color: #fff;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            margin: 0 auto; /* 수정된 부분: 가운데 정렬 */
+        }
+    </style>
+</head>
+<body>
+    
+
+    <!-- 헤더 -->
+    <div class="header">
+        <div class="logo">
+            <a href="Main.html">
+                <img src="https://postfiles.pstatic.net/MjAyMzEwMTNfMjYw/MDAxNjk3MTYzNjcwMDYy.XPihVSwY_hfqEmHzfC0ToqtTn8FVtTvsFqmXfFzll94g.qHLCwIalJGLgLIH3TmP6WdFGhIxTDLHeAq0zM2cSbDMg.PNG.dnj1510/%EA%B2%BD%EB%B6%81_%EA%B8%B8%EB%9D%AC%EC%9E%A1%EC%9D%B4.png?type=w580" alt="로고">
+            </a>
+        </div>
+        <div class="search-container">
+            <form id="searchForm" name="searchForm" method="post" action="/search.do" class="search-form">
+                <input type="hidden" id="cate_top">
+                <input type="text" name="title" id="title" title="검색어 입력" placeholder="검색어를 입력하세요" class="flex-1">
+                <button type="submit" id="searchButton">
+                    <img src="https://postfiles.pstatic.net/MjAyMzExMDVfMjkw/MDAxNjk5MTc2ODE4MjY1.ip9TlhvhZz4ZCGy8t...03HZOmDslaj_YV0W2uJ0Z7QEUg.PNG.dnj1510/search.png?type=w580" alt="검색">
+                </button>
+            </form>
+        </div>
+    </div>
+<!-- icon-container 상단에 글자 추가 -->
+   <div style="text-align: center; margin-top: 20px; font-weight: bold; font-size: 18px;">
+    그림을 클릭하여 사이트를 확인해 주세요!
+    </div>
+
+  
+
+    <div class="icon-container">
+        <div class="icon" style="background-color: #E3F6CE;">
+            <div class="icon-label">기차</div>
+            <a href="https://www.letskorail.com/" target="_blank">
+                🚆 <!-- Emoji for train -->
+            </a>
+            <div class="icon-separator"></div>
+        </div>
+        <div class="icon" style="background-color: #87CEEB;">
+            <div class="icon-label">버스</div>
+            <a href="https://www.bustago.or.kr/newweb/kr/index.do" target="_blank">
+                🚍 <!-- Emoji for bus -->
+            </a>
+            <div class="icon-separator"></div>
+        </div>
+        <div class="icon" style="background-color: #FFC0CB;">
+            <div class="icon-label">배</div>
+            <a href="https://island.haewoon.co.kr/" target="_blank">
+                ⛴️ <!-- Emoji for ship -->
+            </a>
+            <div class="icon-separator"></div>
+        </div>
+        <div class="icon" style="background-color: #F3F781;">
+            <div class="icon-label">교통</div>
+            <a href="https://www.google.co.kr/maps/?hl=ko" target="_blank">
+                🚗 <!-- Emoji for transportation -->
+            </a>
+            <div class="icon-separator"></div>
+        </div>
+    </div>
+    
+    <section id="transportation">
+        <h2>관광 상품 할인& 숙소도 함께 확인하세요!</h2>
+        <!-- 교통 페이지 내용을 추가하세요 -->
+        <div class="transportation-rectangle">
+            <p><a href="https://www.yanolja.com/?utm_source=google_sa&utm_medium=cpc&utm_campaign=20738115572&utm_content=160897187931&utm_term=kwd-298391364620&gclid=Cj0KCQiAgqGrBhDtARIsAM5s0_n-RoYiuCOfPJGBJmPIcmsrpR3Hs0FiuxkgVFB0oIAafUBWxyvfJd8aAh3YEALw_wcB" style="color: #000; text-decoration: none;">다양한 할인과 함께해요!</a></p>
+        </div>
+    </section>
+
+   
+</body>
+</html>
