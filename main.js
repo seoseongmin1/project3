@@ -41,7 +41,7 @@ app.use(
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "tj26484827!!",
+  password: "@lee5854275",
   database: "db_test",
 });
 // MySQL 연결
@@ -546,7 +546,48 @@ app.get("/spot/:spot_id", (req, res) => {
     res.render("spotdetails", { spot: results[0] });
   });
 });
+
+app.get("/review.html", (req, res) => {
+  res.sendFile(__dirname + "/review.html");
+});
+
+app.post('/review.html', (req, res) => {
+  const { placeName, reviewText } = req.body;
+
+  if (placeName && reviewText) {
+    const newReview = { placeName, reviewText };
+    reviews.push(newReview);
+
+    res.status(201).json(newReview);
+  } else {
+    res.status(400).json({ error: '장소 이름과 리뷰 내용을 모두 입력하세요.' });
+  }
+});
+const faqData = [
+  { question: '자주 묻는 질문 1', answer: '대답 1' },
+  { question: '자주 묻는 질문 2', answer: '대답 2' },
+  { question: '자주 묻는 질문 3', answer: '대답 3' },
+  { question: '자주 묻는 질문 4', answer: '대답 4' },
+];
+app.use(express.static('public'));
+app.get("/FAQ.html", (req, res) => {
+  res.sendFile(__dirname + "/FAQ.html");
+});
+
+let posts = [];
+// 게시글 목록 가져오기
+app.get("/posts.html", (req, res) => {
+  res.sendFile(__dirname + "/posts.html");
+});
+// 게시글 작성
+app.post('/posts.html', (req, res) => {
+  const { title, content } = req.body;
+  const newPost = { title, content };
+  posts.push(newPost);
+  res.json(newPost);
+});
 // EJS 설정
+
 app.set("view engine", "ejs");
 app.set("views", __dirname + "/views");
 // 서버 리스닝
