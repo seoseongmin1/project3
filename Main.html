@@ -474,52 +474,21 @@
     <section id="tourist-attractions">
       <h2>인기 관광지</h2>
       <div id="attraction-container"></div>
-      <div class="attraction-card">
-        <img src="image3.jpg" alt="관광지 1" />
-        <h3>관광지 1</h3>
-        <p>설명</p>
-        <a href="#">더 알아보기</a>
-      </div>
-      <div class="attraction-card">
-        <img src="image4.jpg" alt="관광지 2" />
-        <h3>관광지 2</h3>
-        <p>설명</p>
-        <a href="#">더 알아보기</a>
       </div>
       <!-- 다른 관광지 카드들 추가 -->
     </section>
 
     <section id="culture-facilities">
       <h2>문화시설</h2>
-      <div class="facility-card">
-        <img src="image5.jpg" alt="문화시설 1" />
-        <h3>문화시설 1</h3>
-        <p>설명</p>
-        <a href="#">더 알아보기</a>
-      </div>
-      <div class="facility-card">
-        <img src="image6.jpg" alt="문화시설 2" />
-        <h3>문화시설 2</h3>
-        <p>설명</p>
-        <a href="#">더 알아보기</a>
+      <div id="culture-facilities-container">
       </div>
       <!-- 다른 문화시설 카드들 추가 -->
     </section>
 
-    <section id="cafes">
+    <section id="cafe-facilities">
       <h2>카페</h2>
-      <div class="cafe-card">
-        <img src="image7.jpg" alt="카페 1" />
-        <h3>카페 1</h3>
-        <p>설명</p>
-        <a href="#">더 알아보기</a>
-      </div>
-      <div class="cafe-card">
-        <img src="image8.jpg" alt="카페 2" />
-        <h3>카페 2</h3>
-        <p>설명</p>
-        <a href="#">더 알아보기</a>
-      </div>
+      <div id="cafe-facilities-container">
+      </div>  
       <!-- 다른 카페 카드들 추가 -->
     </section>
 
@@ -602,53 +571,154 @@
         cardSlider.style.transform = "translateX(" + slidePosition + ")";
       }
 
+      // 인기관광지 2곳을 표시하는 함수
       async function fetchTouristSpots() {
-        try {
-          const response = await fetch("/api/touristspots");
-          if (response.ok) {
-            const data = await response.json();
-            const attractionContainer = document.getElementById(
-              "attraction-container"
-            );
+    try {
+      const response = await fetch("/touristspots"); 
+      if (response.ok) {
+        const data = await response.json();
+        const attractionContainer = document.getElementById("attraction-container");
 
-            // rating이 높은 순으로 정렬하고 상위 2개만 가져오기
-            const topSpots = data
-              .sort((a, b) => b.rating - a.rating)
-              .slice(0, 2);
+        // 평점을 기준으로 데이터를 내림차순으로 정렬
+        const sortedSpots = data.sort((a, b) => b.rating - a.rating);
 
-            topSpots.forEach((spot) => {
-              const card = document.createElement("div");
-              card.className = "attraction-card";
+        // 상위 2곳만 선택
+        const topSpots = sortedSpots.slice(0, 2);
 
-              const image = document.createElement("img");
-              image.src = spot.image_data;
-              image.alt = spot.spot_name;
+        topSpots.forEach((spot) => {
+          const card = document.createElement("div");
+          card.className = "attraction-card";
 
-              const title = document.createElement("h3");
-              title.textContent = spot.spot_name;
+          const image = document.createElement("img");
+          image.src = spot.image_data;
+          image.alt = spot.spot_name;
 
-              const description = document.createElement("p");
-              description.textContent = spot.description;
+          const title = document.createElement("h3");
+          title.textContent = spot.spot_name;
 
-              const link = document.createElement("a");
-              link.href = `/spot/${spot.spot_id}`;
-              link.textContent = "더 알아보기";
+          const description = document.createElement("p");
+          description.textContent = spot.description;
 
-              card.appendChild(image);
-              card.appendChild(title);
-              card.appendChild(description);
-              card.appendChild(link);
+          const link = document.createElement("a");
+          link.href = `/spot/${spot.spot_id}`;
+          link.textContent = "더 알아보기";
 
-              attractionContainer.appendChild(card);
-            });
-          } else {
-            console.error("데이터를 가져오는 데 실패했습니다.");
-          }
-        } catch (error) {
-          console.error("에러:", error);
-        }
+          card.appendChild(image);
+          card.appendChild(title);
+          card.appendChild(description);
+          card.appendChild(link);
+
+          attractionContainer.appendChild(card);
+        });
+      } else {
+        console.error("데이터를 가져오는 데 실패했습니다.");
       }
+    } catch (error) {
+      console.error("에러:", error);
+    }
+  }
 
+// 랜덤한 문화 관광지 2곳을 표시하는 함수
+async function fetchCultureFacilities() {
+  try {
+    const response = await fetch("/culture-facilities");
+    if (response.ok) {
+      const data = await response.json();
+      const cultureFacilitiesContainer = document.getElementById("culture-facilities-container");
+
+      // 데이터 순서를 섞음
+      const shuffledSpots = data.sort(() => Math.random() - 0.5);
+
+      // 상위 2곳 선택
+      const randomTopSpots = shuffledSpots.slice(0, 2);
+
+      // 처음 두 개의 요소만 처리
+      for (const facility of randomTopSpots) {
+        const card = document.createElement("div");
+        card.className = "facility-card";
+
+        const image = document.createElement("img");
+        image.src = facility.image_data;
+        image.alt = facility.spot_name;
+
+        const title = document.createElement("h3");
+        title.textContent = facility.spot_name;
+
+        const description = document.createElement("p");
+        description.textContent = facility.description;
+
+        const link = document.createElement("a");
+        link.href = `/spot/${facility.spot_id}`;
+        link.textContent = "더 알아보기";
+
+        card.appendChild(image);
+        card.appendChild(title);
+        card.appendChild(description);
+        card.appendChild(link);
+
+        cultureFacilitiesContainer.appendChild(card);
+      }
+    } else {
+      console.error("데이터를 가져오는 데 실패했습니다.");
+    }
+  } catch (error) {
+    console.error("에러:", error);
+  }
+}
+
+// 랜덤한 카페 2곳을 표시하는 함수
+async function fetchCafeFacilities() {
+  try {
+    const response = await fetch("/cafe-facilities");
+    if (response.ok) {
+      const data = await response.json();
+      const cafeFacilitiesContainer = document.getElementById("cafe-facilities-container");
+
+      // 데이터 순서를 섞음
+      const shuffledSpots = data.sort(() => Math.random() - 0.5);
+
+      // 상위 2곳 선택
+      const randomTopSpots = shuffledSpots.slice(0, 2);
+
+      // 처음 두 개의 요소만 처리
+      for (const facility of randomTopSpots) {
+        const card = document.createElement("div");
+        card.className = "cafe-card"; // 수정된 부분
+
+        const image = document.createElement("img");
+        image.src = facility.image_data;
+        image.alt = facility.spot_name;
+
+        const title = document.createElement("h3");
+        title.textContent = facility.spot_name;
+
+        const description = document.createElement("p");
+        description.textContent = facility.description;
+
+        const link = document.createElement("a");
+        link.href = `/spot/${facility.spot_id}`;
+        link.textContent = "더 알아보기";
+
+        card.appendChild(image);
+        card.appendChild(title);
+        card.appendChild(description);
+        card.appendChild(link);
+
+        cafeFacilitiesContainer.appendChild(card);
+      }
+    } else {
+      console.error("데이터를 가져오는 데 실패했습니다.");
+    }
+  } catch (error) {
+    console.error("에러:", error);
+  }
+}
+
+// 페이지 로드 시 문화시설 데이터 가져오기
+document.addEventListener("DOMContentLoaded", fetchCultureFacilities);
+// 페이지 로드 시 카페시설 데이터 가져오기
+document.addEventListener("DOMContentLoaded", fetchCafeFacilities);
+  
       // 페이지 로드 시 관광지 데이터 가져오기
       document.addEventListener("DOMContentLoaded", fetchTouristSpots);
     </script>
