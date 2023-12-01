@@ -186,17 +186,46 @@
         <div class="userinfo">
           <h2>기본정보</h2>
           <p><strong>이름:</strong> <span id="name"></span></p>
+          
+          <p><strong>생년월일:</strong> <span id="birth"></span></p>
+          <p><strong>성별:</strong> <span id="sex"></span></p>
           <p><strong>전화번호:</strong> <span id="phone"></span></p>
           <p><strong>이메일:</strong> <span id="email"></span></p>
-          <p><strong>아이디:</strong> <span id="username"></span></p>
+          
           <div class="withdraw">
             <li>
               <button id="withdrawButton" onclick="confirmWithdraw()">회원탈퇴</button>
             </li>
-          </div>
+            <li>
+              <button id="editButton" onclick="enableEdit()">수정</button>
+            
+
+            </li>
+            <form id="editForm" style="display: none;">
+              <!-- 필요한 수정할 수 있는 입력 필드들을 추가합니다 -->
+              <label for="editName">이름:</label>
+              <input type="text" id="editName" name="editName">
+              <label for="editbirth">생년월일:</label>
+              <input type="text" id="editbirth" name="editbirth">
+              <label for="editName">성별:</label>
+              <input type="text" id="editsex" name="editsex">
+              <label for="editPhone">전화번호:</label>
+              <input type="text" id="editPhone" name="editPhone">
+            
+              <label for="editEmail">이메일:</label>
+              <input type="text" id="editEmail" name="editEmail">
+            
+              <!-- 수정 사항을 서버로 보내는 버튼을 추가합니다 -->
+              <button type="button" onclick="submitEditForm()">저장</button>
+            </form>
+
+             
+          
+            
+          
         </div>
-      </div>
-    </div>
+      
+  
     <script>
       var currentSlide = 0; // 현재 슬라이드 인덱스
 
@@ -233,9 +262,11 @@
 
   function displayUserInfo(userInfo) {
     document.getElementById("name").textContent = userInfo.name;
+    document.getElementById("birth").textContent = userInfo.birth;
+    document.getElementById("sex").textContent = userInfo.sex;
     document.getElementById("phone").textContent = userInfo.phone;
     document.getElementById("email").textContent = userInfo.email;
-    document.getElementById("username").textContent = userInfo.username;
+    
     // 패스워드는 보안상 표시하지 않는 것이 좋습니다.
   }
       
@@ -302,6 +333,71 @@ document.getElementById("searchForm").addEventListener("submit", function (event
             console.error("Error checking login status:", error);
           });
       }
+      function toggleEditFields() {
+    const editFields = document.getElementById('editFields');
+    editFields.style.display = (editFields.style.display === 'none' || editFields.style.display === '') ? 'block' : 'none';
+  }
+
+  function enableEdit() {
+  document.getElementById("editButton").style.display = "none";
+  document.getElementById("editForm").style.display = "block";
+
+  // 현재 정보를 수정 양식에 표시합니다
+  document.getElementById("editName").value = document.getElementById("name").textContent;
+  document.getElementById("editbirth").value = document.getElementById("birth").textContent;
+  document.getElementById("editsex").value = document.getElementById("sex").textContent;
+  document.getElementById("editPhone").value = document.getElementById("phone").textContent;
+  document.getElementById("editEmail").value = document.getElementById("email").textContent;
+}
+
+// 수정 양식 제출을 처리하는 함수를 추가합니다
+function submitEditForm() {
+  const updatedInfo = {
+    name: document.getElementById("editName").value,
+    birth: document.getElementById("editbirth").value,
+    phone: document.getElementById("editPhone").value,
+    sex: document.getElementById("editsex").value,
+    email: document.getElementById("editEmail").value,
+  };
+
+  // 서버에 수정된 정보를 보냅니다
+  fetch("/updateUserInfo", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(updatedInfo),
+  })
+  .then((response) => response.json())
+  .then((data) => {
+    if (data.success) {
+      alert("정보가 성공적으로 업데이트되었습니다.");
+      
+      // 저장 성공 후 최신 정보를 서버에서 다시 가져옴
+      fetchUserInfo();
+    } else {
+      alert("정보 업데이트 중 오류가 발생했습니다.");
+    }
+  })
+  .catch((error) => {
+    console.error("Error updating user info:", error);
+  });
+}
+function fetchUserInfo() {
+  // 최신 정보를 서버에서 가져와서 화면에 반영
+  fetch("/getUserInfo")
+  .then((response) => response.json())
+  .then((userInfo) => {
+    // 가져온 정보를 표시
+    displayUserInfo(userInfo);
+  })
+  .catch((error) => {
+    console.error("Error getting user info:", error);
+  });
+}
+
+      
+      
 
       // 페이지 로드 시 사용자 로그인 상태 확인
       window.onload = checkLoginStatus;
