@@ -189,6 +189,51 @@ async function deleteFromTable(table, username) {
   const deleteQuery = `DELETE FROM ${table} WHERE username = ?`;
   await connection.query(deleteQuery, [username]);
 }
+app.post("/updateUserInfo", async (req, res) => {
+  try {
+    const user = req.session.user;
+    if (!user) {
+      res.status(401).json({ error: '사용자가 인증되지 않았습니다' });
+      return;
+    }
+
+    // 프론트엔드에서 업데이트된 사용자 정보
+    const updatedInfo = req.body;
+
+    // 트랜잭션 시작
+    await connection.beginTransaction();
+
+    // 데이터베이스에서 사용자 정보 업데이트
+    await updateTable("board", user.username, updatedInfo);
+
+    // 필요한 경우 추가적인 테이블에 대해 유사한 방식으로 업데이트
+
+    // 트랜잭션 커밋
+    await connection.commit();
+
+    res.json({ success: true, message: "사용자 정보가 업데이트되었습니다." });
+  } catch (error) {
+    // 트랜잭션 롤백
+    await connection.rollback();
+    console.error("업데이트 중 오류 발생:", error);
+    res.status(500).json({ success: false, message: "사용자 정보 업데이트 중 오류가 발생했습니다." });
+  }
+});
+
+async function updateTable(table, username, updatedInfo) {
+  // 데이터베이스에서 해당 사용자의 정보 업데이트
+  const updateQuery = `UPDATE ${table} SET name=?, birth=?, sex=?, phone=?, email=? WHERE username=?`;
+  const updateParams = [
+    updatedInfo.name,
+    updatedInfo.birth,
+    updatedInfo.sex,
+    updatedInfo.phone,
+    updatedInfo.email,
+    username
+  ];
+  await connection.query(updateQuery, updateParams);
+}
+
 // /wishlist html 폼 페이지 렌더링
 app.get("/wishlist.html", (req, res) => {
   const user = req.session.user;
