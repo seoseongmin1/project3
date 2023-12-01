@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,20 +49,12 @@
     }
   </style>
 </head>
+
 <body>
   <h1>고객문의 목록</h1>
 
   <div id="board">
     <!-- 게시글 목록이 여기에 동적으로 추가됩니다. -->
-    <div class="post">
-      <h2> 제목 1</h2>
-      <p> 내용 1</p>
-    </div>
-
-    <div class="post">
-      <h2> 제목 2</h2>
-      <p> 내용 2</p>
-    </div>
 
     <!-- 동적으로 추가되는 게시글 목록은 이 부분에 표시됩니다. -->
   </div>
@@ -77,5 +70,54 @@
       window.location.href = 'http://localhost:3000/cs.html';
     }
   </script>
+
+  <script>
+     // 페이지 로드 시 서버에서 Q&A 목록을 가져와 UI에 추가하는 함수
+     window.onload = function loadQnAList() {
+      fetch("http://localhost:3000/qnaList")  // 데이터베이스에서 Q&A 목록을 가져올 엔드포인트로 수정
+        .then(response => response.json())
+        .then(data => {
+          // 가져온 Q&A 목록을 동적으로 UI에 추가
+          data.forEach(qna => {
+            addQnAToUI(qna);
+          });
+        })
+        .catch(error => {
+          console.error("Error fetching Q&A list:", error);
+        });
+    };
+
+    // 서버에서 가져온 Q&A를 UI에 추가하는 함수
+    function addQnAToUI(qna) {
+      var qnaDiv = document.createElement("div");
+      qnaDiv.className = "post";
+      qnaDiv.innerHTML = `<h2>${qna.subject}</h2><p>${qna.message}</p>`;
+      document.getElementById("board").appendChild(qnaDiv);
+    }
+    // // 페이지 로드 시 서버에서 게시글 목록을 가져와 UI에 추가하는 함수
+    // window.onload = function addPostToUI() {
+    //   fetch("http://localhost:3000/posts.html")  // main.js 파일이 위치한 경로로 수정
+    //     .then(response => response.json())
+    //     .then(data => {
+    //       // 가져온 게시글 목록을 동적으로 UI에 추가
+    //       data.forEach(post => {
+    //         addPostToUI(post);
+    //       });
+    //     })
+    //     .catch(error => {
+    //       console.error("Error fetching posts:", error);
+    //     });
+    // };
+
+    // // 서버에서 가져온 게시글을 UI에 추가하는 함수
+    // function addPostToUI(post) {
+    //   var postDiv = document.createElement("div");
+    //   postDiv.className = "post";
+    //   postDiv.innerHTML = `<h2>${post.title}</h2><p>${post.content}</p>`;
+    //   // UI에 추가할 부분을 수정할 수 있습니다.
+    //   document.body.appendChild(postDiv);
+    // }
+  </script>
 </body>
+
 </html>
