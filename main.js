@@ -111,9 +111,9 @@ app.get("/cs.html", (req, res) => {
 app.get("/Traffic.html", (req, res) => {
   res.sendFile(__dirname + "/Traffic.html");
 });
-
-
-
+app.get("/Activity.html", (req, res) => {
+  res.sendFile(__dirname + "/Activity.html");
+});
 
 // /submit_inquiry 엔드포인트 핸들러
 app.post("/submit_inquiry", (req, res) => {
@@ -575,7 +575,6 @@ app.get("/cafe-facilities", (req, res) => {
     res.json(results);
   });
 });
-
 // addspot HTML 폼 페이지 렌더링
 app.get("/addspot.html", (req, res) => {
   res.sendFile(__dirname + "/addspot.html");
@@ -653,7 +652,7 @@ app.post('/review.html', (req, res) => {
 
     res.status(201).json(newReview);
   } else {
-    res.status(400).json({ error: '장소 이름과 리뷰 내용을 모두 입력하세요.' });
+    res.status(400).json({ error: '장소와 리뷰 내용을 모두 입력하세요.' });
   }
 });
 const faqData = [
@@ -696,10 +695,65 @@ app.get("/qnaList", (req, res) => {
 });
 // EJS 설정
 
+const reviews = [];
+
+// 리뷰 목록 가져오기
+app.get('/api/reviews2', (req, res) => {
+  const selectQuery = 'SELECT * FROM reviews'; // 적절한 쿼리로 변경해야 합니다.
+
+  connection.query(selectQuery, (error, results, fields) => {
+      if (error) {
+          console.error('MySQL 쿼리 오류:', error);
+          res.status(500).json({ error: '서버 오류' }); // 오류 응답을 보냅니다.
+          return;
+      }
+
+      res.json(results); // 정상적인 경우에만 응답을 보냅니다.
+  });
+});
+
+
+
+// 리뷰 작성
+app.post('/api/reviews', (req, res) => {
+    const { placeName, reviewText, rating } = req.body;
+
+    if (!placeName || !reviewText || !rating) {
+        return res.status(400).json({ error: 'Invalid data' });
+    }
+
+    const newReview = { placeName, reviewText, rating };
+    reviews.push(newReview);
+
+    res.json(newReview);
+    const insertReviewQuery = `INSERT INTO Reviews (placeName, reviewText, rating) VALUES (?, ?, ?)`;
+    connection.query(insertReviewQuery, [placeName, reviewText, rating], (error, results) => {
+        if (error) {
+            console.error('Error inserting review into database:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        } else {
+            res.json(newReview);
+        }
+    });
+});
+
+app.get("/reviewboard.html", (req, res) => {
+  res.sendFile(__dirname + "/reviewboard.html");
+   // 여기에서 데이터베이스에서 리뷰 목록을 가져오도록 수정
+   const selectReviewsQuery = `SELECT * FROM Reviews`;
+   connection.query(selectReviewsQuery, (error, results) => {
+       if (error) {
+           console.error('Error fetching reviews from database:', error);
+           res.status(500).json({ error: 'Internal Server Error' });
+       } else {
+           res.json(results);
+       }
+   });
+});
+
 app.set("view engine", "ejs");
 app.set("views", __dirname + "/views");
 // 서버 리스닝
 app.listen(PORT, () => {
   console.log(`서버가 http://localhost:${PORT}/main.html 에서 실행 중입니다.`);
 });
-
