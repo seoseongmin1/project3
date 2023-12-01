@@ -115,7 +115,7 @@
               </button>
               <button class="custom-button" id="loginBtn">
                 <a href="/login.html">로그인</a>
-            <button class="custom-button"><a href="/cs.html">고객센터</a></button>
+            <button class="custom-button"><a href="/posts.html">고객센터</a></button>
         </div>
     </div>
 
@@ -230,11 +230,12 @@ function saveInquiry(username, email, subject, message) {
     // AJAX를 사용하여 서버로 데이터 전송
     $.ajax({
         type: 'POST',
-        url: '/submit_inquiry', // 실제 서버 엔드포인트로 수정해야 함
+        url: 'http://localhost:3000/submit_inquiry', // 실제 서버 엔드포인트로 수정해야 함
         data: { username: username, email: email, subject: subject, message: message },
         success: function (response) {
             alert('문의가 성공적으로 제출되었습니다.');
-            // 성공적으로 제출한 후에 추가적인 동작이 필요하면 여기에 코드 추가
+            // 성공적으로 제출한 후에 posts.html 페이지로 리디렉션
+            window.location.href = '/posts.html';
         },
         error: function (error) {
             alert('문의 제출 중 오류가 발생하였습니다.');
