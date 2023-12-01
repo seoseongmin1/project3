@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>고객문의목록</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    #board {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .post {
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    form {
+      max-width: 400px;
+      margin: 20px auto;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 10px;
+    }
+
+    button {
+      background-color: #4caf50;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <h1>고객문의 목록</h1>
+
+  <div id="board">
+    <!-- 게시글 목록이 여기에 동적으로 추가됩니다. -->
+    <div class="post">
+      <h2> 제목 1</h2>
+      <p> 내용 1</p>
+    </div>
+
+    <div class="post">
+      <h2> 제목 2</h2>
+      <p> 내용 2</p>
+    </div>
+
+    <!-- 동적으로 추가되는 게시글 목록은 이 부분에 표시됩니다. -->
+  </div>
+
+  <form id="postForm">
+    <!-- 제목과 내용 입력란을 없애고, 게시글 작성 버튼만 남깁니다. -->
+    <button type="button" onclick="redirectToNewPage()">문의 작성</button>
+  </form>
+
+  <script>
+    function redirectToNewPage() {
+      // 게시글 작성 버튼을 눌렀을 때, 지정된 페이지로 이동합니다.
+      window.location.href = 'http://localhost:3000/cs.html';
+    }
+  </script>
+</body>
+</html>
