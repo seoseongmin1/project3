@@ -108,6 +108,11 @@ app.get("/main.html", (req, res) => {
 app.get("/cs.html", (req, res) => {
   res.sendFile(__dirname + "/cs.html");
 });
+app.get("/Traffic.html", (req, res) => {
+  res.sendFile(__dirname + "/Traffic.html");
+});
+
+
 // /submit_inquiry 엔드포인트 핸들러
 app.post("/submit_inquiry", (req, res) => {
   const { username, email, subject, message } = req.body;
@@ -664,3 +669,4 @@ app.set("views", __dirname + "/views");
 app.listen(PORT, () => {
   console.log(`서버가 http://localhost:${PORT}/main.html 에서 실행 중입니다.`);
 });
+
