@@ -113,6 +113,8 @@ app.get("/Traffic.html", (req, res) => {
 });
 
 
+
+
 // /submit_inquiry 엔드포인트 핸들러
 app.post("/submit_inquiry", (req, res) => {
   const { username, email, subject, message } = req.body;
@@ -543,6 +545,37 @@ app.get("/touristspots", (req, res) => {
     res.json(results);
   });
 });
+
+// /culture-facilities 엔드포인트 핸들러
+app.get("/culture-facilities", (req, res) => {
+  // MySQL 쿼리: TouristSpots 테이블에서 category가 '문화'인 정보를 랜덤으로 2개 선택
+  const query = "SELECT * FROM TouristSpots WHERE category = '문화'";
+  // 쿼리 실행
+  connection.query(query, (error, results) => {
+    if (error) {
+      res.status(500).send("Internal Server Error");
+      throw error;
+    }
+    // 쿼리 결과를 JSON 형태로 응답
+    res.json(results);
+  });
+});
+
+// /cafe-facilities 엔드포인트 핸들러
+app.get("/cafe-facilities", (req, res) => {
+  // MySQL 쿼리: TouristSpots 테이블에서 food_category가 '카페'인 정보를 랜덤으로 2개 선택
+  const query = "SELECT * FROM TouristSpots WHERE food_category LIKE '%카페%'";
+  // 쿼리 실행
+  connection.query(query, (error, results) => {
+    if (error) {
+      res.status(500).send("Internal Server Error");
+      throw error;
+    }
+    // 쿼리 결과를 JSON 형태로 응답
+    res.json(results);
+  });
+});
+
 // addspot HTML 폼 페이지 렌더링
 app.get("/addspot.html", (req, res) => {
   res.sendFile(__dirname + "/addspot.html");
