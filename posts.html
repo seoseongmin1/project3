@@ -62,13 +62,17 @@
   <form id="postForm">
     <!-- 제목과 내용 입력란을 없애고, 게시글 작성 버튼만 남깁니다. -->
     <button type="button" onclick="redirectToNewPage()">문의 작성</button>
-    <button type="button" onclick="redirectToNewPage()">FAQ</button>
+    <button type="button" onclick="redirectToFAQPage()">FAQ</button>
   </form>
 
   <script>
     function redirectToNewPage() {
       // 게시글 작성 버튼을 눌렀을 때, 지정된 페이지로 이동합니다.
       window.location.href = 'http://localhost:3000/cs.html';
+    }
+
+    function redirectToFAQPage() {
+      // 게시글 작성 버튼을 눌렀을 때, 지정된 페이지로 이동합니다.
       window.location.href = 'http://localhost:3000/FAQ.html';
     }
   </script>
