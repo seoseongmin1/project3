@@ -41,7 +41,7 @@ app.use(
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "tj26484827!!",
+  password: "@lee5854275",
   database: "db_test",
 });
 // MySQL 연결
@@ -145,7 +145,7 @@ app.get("/getUserInfo", (req, res) => {
     return;
   }
   // 데이터베이스에서 사용자 정보를 조회
-  const query = `SELECT name, birth,sex, phone, email FROM board WHERE username = ?`;
+  const query = `SELECT username, name, phone, email FROM board WHERE username = ?`;
   connection.query(query, [user.username], (err, results) => {
     if (err) {
       console.error('Error querying user info:', err);
@@ -404,11 +404,11 @@ app.get("/findid.html", (req, res) => {
 // 아이디 찾기 API
 app.post("/findid", (req, res) => {
   console.log("아이디 찾기 요청 받음");
-  const { name, phone,email } = req.body;
+  const { name, phone } = req.body;
   // 실제로는 데이터베이스에서 조회하는 쿼리를 사용해야 합니다.
   // 여기서는 가상의 데이터베이스로 대체합니다.
-  const selectQuery = "SELECT username FROM board WHERE name = ? AND phone = ? AND email=?";
-  connection.query(selectQuery, [name, phone, email], (err, result) => {
+  const selectQuery = "SELECT username FROM board WHERE name = ? AND phone = ?";
+  connection.query(selectQuery, [name, phone], (err, result) => {
     if (err) {
       console.error("Error querying user:", err);
       res.status(500).json({ message: "Internal Server Error" });
@@ -432,11 +432,11 @@ app.get("/findpw.html", (req, res) => {
 // 비밀번호 찾기 API
 app.post("/findpw", (req, res) => {
   console.log("아이디 찾기 요청 받음");
-  const { username,name,phone } = req.body;
+  const { username } = req.body;
   // 실제로는 데이터베이스에서 조회하는 쿼리를 사용해야 합니다.
   // 여기서는 가상의 데이터베이스로 대체합니다.
-  const selectQuery = "SELECT password FROM board WHERE username = ? AND name=? AND phone =?";
-  connection.query(selectQuery, [username,name,phone], (err, result) => {
+  const selectQuery = "SELECT password FROM board WHERE username = ?";
+  connection.query(selectQuery, [username], (err, result) => {
     if (err) {
       console.error("Error querying id:", err);
       res.status(500).json({ message: "Internal Server Error" });
@@ -460,7 +460,7 @@ app.get("/signup.html", (req, res) => {
 
 // 회원가입 엔드포인트
 app.post("/signup", async (req, res) => { // async 키워드 추가
-  const { name, username, password, phone, email, sex, birth } = req.body;
+  const { name, username, password, phone, email } = req.body;
 
   // 중복 확인 API를 호출하여 아이디 중복 여부를 확인
   const checkUsernameUrl = "http://localhost:3000/check-username";
@@ -475,8 +475,8 @@ app.post("/signup", async (req, res) => { // async 키워드 추가
           res.status(400).json({ error: "아이디가 이미 존재합니다." });
       } else {
           // 아이디가 사용 가능한 경우, 회원가입 진행
-          const insertQuery = `INSERT INTO board (name, username, password, phone, email, sex, birth) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-          connection.query(insertQuery, [name, username, password, phone, email, sex, birth], (err, result) => {
+          const insertQuery = `INSERT INTO board (name, username, password, phone, email) VALUES (?, ?, ?, ?, ?)`;
+          connection.query(insertQuery, [name, username, password, phone, email], (err, result) => {
               if (err) {
                   console.error('Error inserting data:', err);
                   res.status(500).json({ error: '회원가입 중 오류가 발생했습니다.' });
@@ -641,7 +641,23 @@ app.post('/posts.html', (req, res) => {
   posts.push(newPost);
   res.json(newPost);
 });
+// Q&A 목록을 반환하는 엔드포인트
+app.get("/qnaList", (req, res) => {
+  // 데이터베이스에서 Q&A 목록을 가져오는 쿼리
+  const selectQuery = `SELECT * FROM qna`;
+
+  connection.query(selectQuery, (error, results) => {
+    if (error) {
+      console.error("Error fetching Q&A list:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    } else {
+      // 결과를 JSON 형태로 반환
+      res.json(results);
+    }
+  });
+});
 // EJS 설정
+
 app.set("view engine", "ejs");
 app.set("views", __dirname + "/views");
 // 서버 리스닝
