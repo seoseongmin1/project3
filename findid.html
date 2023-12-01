@@ -60,6 +60,9 @@
                 <label for="phone">전화번호:</label>
                 <input type="tel" id="phone" name="phone" required>
                 <br>
+                <label for="email">이메일:</label>
+                <input type="tel" id="email" name="email" required>
+                <br>
                 <!-- 변경된 부분: onclick 이벤트를 findUsername 함수로 변경 -->
                 <button type="button" onclick="findusername()">아이디 찾기</button>
             </form>
@@ -70,13 +73,14 @@
         async function findusername() {
             const name = document.getElementById("name").value;
             const phone = document.getElementById("phone").value;
+            const email = document.getElementById("email").value;
             try {
                 const response = await fetch('http://localhost:3000/findid', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ name, phone }),
+                    body: JSON.stringify({ name, phone, email }),
                 });
 
                 if (response.ok) {
