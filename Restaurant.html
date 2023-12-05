@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>경북 길라잡이 : 테마</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #ffffff;
+        margin: 0;
+        padding: 0;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .header {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        background-color: #ffffff; /* 원하는 배경색 설정 */
+      }
+
+      .logo {
+        display: inline-block;
+      }
+
+      .search-container {
+        display: flex;
+        align-items: center; /* 수직 가운데 정렬 */
+        justify-content: center; /* 수평 가운데 정렬 */
+        background-color: #fff; /* 검색 박스 배경색 */
+        border: 1px solid #ccc; /* 검색 박스 테두리 */
+        padding: 10px;
+        max-width: 700px;
+        width: 100%;
+        margin-left: 50px;
+        border-radius: 10px;
+      }
+
+      #title {
+        border: none;
+        padding: 5px;
+        flex: 1; /* 나머지 공간을 채우도록 설정 */
+      }
+
+      #searchButton {
+        background-color: #ffffff; /* 검색 버튼 배경색 */
+        color: #fff; /* 검색 버튼 텍스트색 */
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+      }
+
+      .search-form {
+        display: flex;
+        flex: 1; /* 전체 공간을 차지하도록 설정 */
+      }
+
+      .buttons {
+        display: flex;
+        align-items: center;
+        margin-left: 120px;
+        text-decoration: none;
+        color: #000000;
+      }
+
+      .custom-button {
+        margin-left: 30px; /* 버튼 사이 간격 조정 */
+        width: 100px;
+        height: 50px;
+        border-radius: 10px;
+        border: #ffffff;
+        background-color: #ffffff;
+      }
+      .custom-button a {
+        text-decoration: none;
+        color: #000000;
+      }
+      .menu {
+        display: flex;
+        background-color: #ffffff;
+        align-items: center;
+        justify-content: center;
+      }
+      .menu a {
+        text-decoration: none;
+        color: #000000;
+      }
+
+      .menu-button {
+        background-color: #ffffff;
+        border: none;
+        padding: 10px;
+        margin: 0px;
+        cursor: pointer;
+        position: relative;
+        border: #ffffff;
+        font-size: larger;
+        font-family: Arial, sans-serif;
+        width: 140px;
+        height: 50px;
+        text-align: center;
+      }
+
+      .container {
+        font-size: xx-large;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; /* 화면 전체 높이에 대한 100% */
+      }
+
+      .city_box {
+        font-size: large;
+        width: 1280px;
+        height: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        list-style: none;
+        padding: 0;
+        margin-left: 124px;
+      }
+
+      .city_box li {
+        width: 256px;
+        height: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        list-style: none;
+        padding: 0;
+      }
+
+      .city_box a {
+        text-decoration: none;
+        color: #000000;
+      }
+      .img-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center; /* 가로 중앙 정렬 */
+        margin-left: 110px;
+        margin-right: 110px;
+      }
+
+      .img-container .img-wrapper {
+        width: 25%; /* 가로 한 줄에 4개씩 배치 */
+        padding: 10px;
+        box-sizing: border-box;
+        text-align: center;
+        max-width: 250px; /* 최대 너비 설정 */
+        height: 250px; /* 고정된 높이 설정 */
+      }
+
+      .img-container img {
+        width: 100%;
+        height: 100%;
+        border: 2px solid #000;
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div class="logo">
+        <a href="Main.html">
+          <img
+            src="https://postfiles.pstatic.net/MjAyMzEwMTNfMjYw/MDAxNjk3MTYzNjcwMDYy.XPihVSwY_hfqEmHzfC0ToqtTn8FVtTvsFqmXfFzll94g.qHLCwIalJGLgLIH3TmP6WdFGhIxTDLHeAq0zM2cSbDMg.PNG.dnj1510/%EA%B2%BD%EB%B6%81_%EA%B8%B8%EB%9D%AC%EC%9E%A1%EC%9D%B4.png?type=w580"
+            alt="로고"
+          />
+        </a>
+      </div>
+      <div class="search-container">
+        <form
+          id="searchForm"
+          name="searchForm"
+          method="post"
+          action="/search.do"
+          class="search-form"
+        >
+          <input type="hidden" id="cate_top" />
+          <input
+            type="text"
+            name="title"
+            id="title"
+            title="검색어 입력"
+            placeholder="검색어를 입력하세요"
+            class="flex-1"
+          />
+          <button type="submit" id="searchButton">
+            <img
+              src="https://postfiles.pstatic.net/MjAyMzExMDVfMjkw/MDAxNjk5MTc2ODE4MjY1.ip9TlhvhZz4ZCGy8tKMO6vKr-3kOG8T-Zy5MBXG6Yogg.zVE42yT4Hf3MUp96DK93HZOmDslaj_YV0W2uJ0Z7QEUg.PNG.dnj1510/search.png?type=w580"
+              alt="검색"
+            />
+          </button>
+        </form>
+      </div>
+
+      <div class="buttons">
+        <button class="custom-button">
+          <a href="Wishlist.html">위시리스트</a>
+        </button>
+        <button class="custom-button">
+          <a href="MyPage.html">마이페이지</a>
+          <button class="custom-button" id="logoutBtn" style="display: none">
+            <a href="/logout">로그아웃</a>
+          </button>
+          <button class="custom-button" id="loginBtn">
+            <a href="/login.html">로그인</a>
+          </button>
+        <button class="custom-button"><a href="CS.html">고객센터</a></button>
+      </div>
+    </div>
+    <div class="menu">
+      <div class="menu-button">
+        <a href="Restaurant.html">맛집</a>
+      </div>
+      <div class="menu-button">
+        <a href="Culture.html">문화</a>
+      </div>
+      <div class="menu-button">
+        <a href="Activity.html">체험</a>
+      </div>
+      <div class="menu-button">
+        <a href="Nature.html">자연</a>
+      </div>
+      <div class="menu-button">
+        <a href="Traffic.html">교통</a>
+      </div>
+    </div>
+    <div class="container" style="height: 140px">
+      <span><b>맛집</b></span>
+    </div>
+    <div class="city_box">            
+            <a href="po"><li>포항</li></a>
+            <a href="ju"><li>경주</li></a>
+            <a href="ul"><li>울진</li></a>
+            <a href="duck"><li>영덕</li></a>
+            <a href="cheon"><li>영천</li></a>
+    </div>
+    <div class="img-container" id="imagecontainer">
+      <!-- 이미지가 동적으로 추가될 공간 -->
+    </div>
+        <button class="custom-button" id="poButton" onclick="navigateTopo()">포항</button>
+        <button class="custom-button" id="juButton" onclick="navigateToju()">경주</button>
+        <button class="custom-button" id="ulButton" onclick="navigateToul()">울진</button>
+        <button class="custom-button" id="duckButton" onclick="navigateToduck()">영덕</button>
+        <button class="custom-button" id="cheonButton" onclick="navigateTocheon()">영천</button>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("http://localhost:3000/api/getImages")
+          .then((response) => response.json())
+          .then((data) => {
+            const imageContainer = document.getElementById("imagecontainer"); // 수정된 부분
+
+            // 이미지 정보를 받아와서 동적으로 HTML 생성
+            data.images.forEach((image) => {
+              const imgWrapper = document.createElement("div");
+              imgWrapper.classList.add("img-wrapper");
+
+              const anchor = document.createElement("a");
+              anchor.href = `/spot/${image.spot_id}`;
+
+              const img = document.createElement("img");
+              img.src = image.image_url;
+              img.alt = image.spot_name;
+
+              anchor.appendChild(img);
+              imgWrapper.appendChild(anchor);
+              imageContainer.appendChild(imgWrapper);
+            });
+          })
+          .catch((error) => console.error("에러 발생:", error));
+      });
+
+      // 검색 폼 제출 시
+      document
+        .getElementById("searchForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          // 검색어 가져오기
+          const searchKeyword = document.getElementById("title").value;
+
+          // 입력이 없을 경우 경고 메시지 표시
+          if (!searchKeyword.trim()) {
+            alert("검색어를 입력하세요.");
+            return;
+          }
+
+          // 검색 요청 보내기
+          fetch("/search.do", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ title: searchKeyword }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              // 검색 결과를 받아와서 동적으로 UI에 추가
+              // 여기서는 결과를 search-result.html로 이동하는 방식으로 변경
+              window.location.href = `/search-result.html?results=${encodeURIComponent(
+                JSON.stringify(data)
+              )}`;
+            })
+            .catch((error) => {
+              console.error("Error searching:", error);
+            });
+        });
+
+      function checkLoginStatus() {
+        fetch("/currentUser")
+          .then((response) => response.json())
+          .then((data) => {
+            const user = data.username;
+
+            // 여기에서 user 상태에 따라 버튼을 표시/숨김 처리
+            if (user) {
+              document.getElementById("logoutBtn").style.display = "block";
+              document.getElementById("loginBtn").style.display = "none";
+            } else {
+              document.getElementById("logoutBtn").style.display = "none";
+              document.getElementById("loginBtn").style.display = "block";
+            }
+          })
+          .catch((error) => {
+            console.error("Error checking login status:", error);
+          });
+      }
+            function navigateToPo() {
+    window.location.href = "po.html";}
+
+      // 페이지 로드 시 사용자 로그인 상태 확인
+      window.onload = checkLoginStatus;
+    </script>
+  </body>
+</html>
