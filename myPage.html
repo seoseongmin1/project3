@@ -180,7 +180,7 @@
       <div class="menu">
         <li><a href="MyPage.html">내 프로필</a></li>
         <li><a href="review.html">리뷰추가</a></li>
-        <li><a href="mypage.html">리뷰목록</a></li>
+        <li><a href="review-list.html">리뷰목록</a></li>
       </div>
       <div class="info">
         <div class="userinfo">
@@ -395,6 +395,12 @@ function fetchUserInfo() {
     console.error("Error getting user info:", error);
   });
 }
+// 리뷰 목록 창을 열기 위한 함수
+function openReviewList() {
+    // 리뷰 목록 페이지가 "review-list.html"인 것으로 가정합니다.
+    window.open("/review-list.html", "_blank");}
+
+  
 
       
       
