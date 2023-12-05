@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>리뷰 목록</title>
+    <style>
+        /* 필요한 스타일 추가 */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #fff;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>리뷰 목록</h1>
+
+    <ul id="reviewList">
+        <!-- 여기에 실제 리뷰 목록을 동적으로 추가할 예정 -->
+    </ul>
+
+    <script>
+        // 실제 데이터를 받아오거나 동적으로 생성하는 로직이 필요합니다.
+        // 여기에서는 예시로 몇 개의 리뷰를 정적으로 추가합니다.
+        const reviews = [
+            "좋은 제품이에요!",
+            "서비스가 만족스러워요.",
+            "가격 대비 훌륭한 품질입니다."
+            // 필요에 따라 더 많은 리뷰 추가
+        ];
+
+        const reviewList = document.getElementById("reviewList");
+
+        // 리뷰 목록을 동적으로 생성하여 추가
+        reviews.forEach((reviewText) => {
+            const li = document.createElement("li");
+            li.textContent = reviewText;
+            reviewList.appendChild(li);
+        });
+    </script>
+</body>
+</html>
