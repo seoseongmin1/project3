@@ -166,6 +166,141 @@ app.get("/getUserInfo", (req, res) => {
     res.json(userInfo);
   });
 });
+// /spot/:spot_id 엔드포인트 핸들러
+app.get("/spot/:spot_id", (req, res) => {
+  const spot_id = req.params.spot_id;
+  // MySQL 쿼리: 특정 spot_id에 대한 정보를 선택
+  const query = "SELECT * FROM TouristSpots WHERE spot_id = ?";
+  // 쿼리 실행
+  connection.query(query, [spot_id], (error, results) => {
+    if (error) {
+      res.status(500).send("Internal Server Error");
+      throw error;
+    }
+    // 결과가 없는 경우 404 에러를 보냄
+    if (results.length === 0) {
+      res.status(404).send("Spot not found");
+      return;
+    }
+    // EJS 템플릿을 렌더링하여 HTML로 응답
+    res.render("spotdetails", { spot: results[0] });
+  });
+});
+
+// '맛집' 카테고리의 데이터를 가져오는 API 엔드포인트
+app.get('/Restaurant.html', (req, res) => {
+  const category = '맛집';
+  const query = `SELECT * FROM touristspots WHERE category = '${category}'`;
+
+  const user = req.session.user;
+  if (user) {
+    // 로그인된 사용자인 경우
+    connection.query(query, (err, results) => {
+      if (err) {
+        console.error('쿼리 실행 실패:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+      } else {
+        console.log('데이터 가져오기 성공');
+        res.json(results);
+      }
+    });
+  } else {
+    // 로그인되지 않은 사용자인 경우
+    res.redirect("/login.html");
+  }
+})
+
+// '맛집' 카테고리의 데이터를 가져오는 API 엔드포인트
+app.get('/Restaurant.html', (req, res) => {
+  const category = '맛집';
+  const query = `SELECT * FROM touristspots WHERE category = '${category}'`;
+
+  const user = req.session.user;
+  if (user) {
+    // 로그인된 사용자인 경우
+    connection.query(query, (err, results) => {
+      if (err) {
+        console.error('쿼리 실행 실패:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+      } else {
+        console.log('데이터 가져오기 성공');
+        res.json(results);
+      }
+    });
+  } else {
+    // 로그인되지 않은 사용자인 경우
+    res.redirect("/login.html");
+  }
+})
+
+// '맛집' 카테고리의 이미지 URL을 데이터베이스에서 가져와서 클라이언트에 전송
+app.get('/api/getImages', (req, res) => {
+  try {
+    const category = '맛집';
+    const query = `SELECT * FROM touristspots WHERE category = '${category}'`;
+
+    connection.query(query, (err, results) => {
+      if (err) {
+        console.error('쿼리 실행 실패:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+      } else {
+        console.log('데이터 가져오기 성공');
+        
+        // 이미지 정보를 배열로 만들어 클라이언트에 전송
+        const images = results.map(result => {
+          return {
+            spot_id: result.spot_id,
+            spot_name: result.spot_name,
+            image_url: result.image_data, // 이미지 데이터 필드에 따라 수정
+          };
+        });
+
+        res.json({ images });
+      }
+    });
+  } catch (error) {
+    console.error('에러 발생:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+app.get('/po.html', (req, res) => {
+  // MySQL 쿼리
+  const query = 'SELECT * FROM touristspots WHERE location LIKE ?';
+  const keyword = '%포항%';
+
+  // 쿼리 실행
+  connection.query(query, [keyword], (error, results, fields) => {
+    if (error) {
+      console.error('Error fetching data:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+      return;
+    }
+
+    // 결과 반환
+    res.json(results);
+  });
+});
+app.get('/api/touristspots/image/:id', (req, res) => {
+  const spotId = req.params.id;
+  const query = 'SELECT image_data FROM touristspots WHERE id = ?';
+
+  connection.query(query, [spotId], (error, results, fields) => {
+    if (error) {
+      console.error('Error fetching image data:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+      return;
+    }
+
+    if (results.length === 0 || !results[0].image_data) {
+      res.status(404).json({ error: 'Image not found' });
+      return;
+    }
+
+    // 이미지 데이터를 응답으로 보냄
+    res.contentType('image/jpeg'); // 이미지 형식에 따라 수정
+    res.send(results[0].image_data);
+  });
+});
 
 app.post("/withdraw", async (req, res) => {
   try {
@@ -525,16 +660,7 @@ connection.query(query, [username], (error, results) => {
     }
 });
 });
-app.get("/Restaurant.html", (req, res) => {
-  const user = req.session.user;
-if (user) {
-  // 로그인된 사용자인 경우
-  res.sendFile(__dirname + "/Restaurant.html");
-} else {
-  // 로그인되지 않은 사용자인 경우
-  res.redirect("/login.html"); // 또는 다른 로그인 페이지로 이동
-}
-});
+
 
 // /touristspots 엔드포인트 핸들러
 app.get("/touristspots", (req, res) => {
