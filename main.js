@@ -41,7 +41,7 @@ app.use(
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "@lee5854275",
+  password: "tj26484827!!",
   database: "db_test",
 });
 // MySQL 연결
@@ -356,6 +356,12 @@ app.get("/search-result.html", (req, res) => {
 // /login html 폼 페이지 렌더링
 app.get("/login.html", async function (req, res) {
   res.sendFile(__dirname + "/login.html");
+});
+
+
+
+app.get("/review-list.html", async function (req, res) {
+  res.sendFile(__dirname + "/review-list.html");
 });
 
 
