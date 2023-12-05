@@ -109,12 +109,11 @@ app.get("/cs.html", (req, res) => {
   res.sendFile(__dirname + "/cs.html");
 });
 app.get("/Traffic.html", (req, res) => {
-  res.sendFile(__dirname + "/Traffic.html");
-});
-app.get("/Activity.html", (req, res) => {
-  res.sendFile(__dirname + "/Activity.html");
-});
-
+    res.sendFile(__dirname + "/Traffic.html");
+  });
+  app.get("/Activity.html", (req, res) => {
+    res.sendFile(__dirname + "/Activity.html");
+  });
 // /submit_inquiry 엔드포인트 핸들러
 app.post("/submit_inquiry", (req, res) => {
   const { username, email, subject, message } = req.body;
@@ -152,7 +151,7 @@ app.get("/getUserInfo", (req, res) => {
     return;
   }
   // 데이터베이스에서 사용자 정보를 조회
-  const query = `SELECT username, name, phone, email FROM board WHERE username = ?`;
+  const query = `SELECT name, birth,sex, phone, email FROM board WHERE username = ?`;
   connection.query(query, [user.username], (err, results) => {
     if (err) {
       console.error('Error querying user info:', err);
@@ -358,11 +357,11 @@ app.get("/login.html", async function (req, res) {
   res.sendFile(__dirname + "/login.html");
 });
 
-
-
+//리뷰 목록
 app.get("/review-list.html", async function (req, res) {
-  res.sendFile(__dirname + "/review-list.html");
-});
+    res.sendFile(__dirname + "/review-list.html");
+  });
+  
 
 
 // 로그인 API
@@ -417,11 +416,11 @@ app.get("/findid.html", (req, res) => {
 // 아이디 찾기 API
 app.post("/findid", (req, res) => {
   console.log("아이디 찾기 요청 받음");
-  const { name, phone } = req.body;
+  const { name, phone,email } = req.body;
   // 실제로는 데이터베이스에서 조회하는 쿼리를 사용해야 합니다.
   // 여기서는 가상의 데이터베이스로 대체합니다.
-  const selectQuery = "SELECT username FROM board WHERE name = ? AND phone = ?";
-  connection.query(selectQuery, [name, phone], (err, result) => {
+  const selectQuery = "SELECT username FROM board WHERE name = ? AND phone = ? AND email=?";
+  connection.query(selectQuery, [name, phone, email], (err, result) => {
     if (err) {
       console.error("Error querying user:", err);
       res.status(500).json({ message: "Internal Server Error" });
@@ -445,11 +444,11 @@ app.get("/findpw.html", (req, res) => {
 // 비밀번호 찾기 API
 app.post("/findpw", (req, res) => {
   console.log("아이디 찾기 요청 받음");
-  const { username } = req.body;
+  const { username,name,phone } = req.body;
   // 실제로는 데이터베이스에서 조회하는 쿼리를 사용해야 합니다.
   // 여기서는 가상의 데이터베이스로 대체합니다.
-  const selectQuery = "SELECT password FROM board WHERE username = ?";
-  connection.query(selectQuery, [username], (err, result) => {
+  const selectQuery = "SELECT password FROM board WHERE username = ? AND name=? AND phone =?";
+  connection.query(selectQuery, [username,name,phone], (err, result) => {
     if (err) {
       console.error("Error querying id:", err);
       res.status(500).json({ message: "Internal Server Error" });
@@ -473,7 +472,7 @@ app.get("/signup.html", (req, res) => {
 
 // 회원가입 엔드포인트
 app.post("/signup", async (req, res) => { // async 키워드 추가
-  const { name, username, password, phone, email } = req.body;
+  const { name, username, password, phone, email, sex, birth } = req.body;
 
   // 중복 확인 API를 호출하여 아이디 중복 여부를 확인
   const checkUsernameUrl = "http://localhost:3000/check-username";
@@ -488,8 +487,8 @@ app.post("/signup", async (req, res) => { // async 키워드 추가
           res.status(400).json({ error: "아이디가 이미 존재합니다." });
       } else {
           // 아이디가 사용 가능한 경우, 회원가입 진행
-          const insertQuery = `INSERT INTO board (name, username, password, phone, email) VALUES (?, ?, ?, ?, ?)`;
-          connection.query(insertQuery, [name, username, password, phone, email], (err, result) => {
+          const insertQuery = `INSERT INTO board (name, username, password, phone, email, sex, birth) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+          connection.query(insertQuery, [name, username, password, phone, email, sex, birth], (err, result) => {
               if (err) {
                   console.error('Error inserting data:', err);
                   res.status(500).json({ error: '회원가입 중 오류가 발생했습니다.' });
@@ -551,36 +550,35 @@ app.get("/touristspots", (req, res) => {
     res.json(results);
   });
 });
-
 // /culture-facilities 엔드포인트 핸들러
 app.get("/culture-facilities", (req, res) => {
-  // MySQL 쿼리: TouristSpots 테이블에서 category가 '문화'인 정보를 랜덤으로 2개 선택
-  const query = "SELECT * FROM TouristSpots WHERE category = '문화'";
-  // 쿼리 실행
-  connection.query(query, (error, results) => {
-    if (error) {
-      res.status(500).send("Internal Server Error");
-      throw error;
-    }
-    // 쿼리 결과를 JSON 형태로 응답
-    res.json(results);
+    // MySQL 쿼리: TouristSpots 테이블에서 category가 '문화'인 정보를 랜덤으로 2개 선택
+    const query = "SELECT * FROM TouristSpots WHERE category = '문화'";
+    // 쿼리 실행
+    connection.query(query, (error, results) => {
+      if (error) {
+        res.status(500).send("Internal Server Error");
+        throw error;
+      }
+      // 쿼리 결과를 JSON 형태로 응답
+      res.json(results);
+    });
   });
-});
-
-// /cafe-facilities 엔드포인트 핸들러
-app.get("/cafe-facilities", (req, res) => {
-  // MySQL 쿼리: TouristSpots 테이블에서 food_category가 '카페'인 정보를 랜덤으로 2개 선택
-  const query = "SELECT * FROM TouristSpots WHERE food_category LIKE '%카페%'";
-  // 쿼리 실행
-  connection.query(query, (error, results) => {
-    if (error) {
-      res.status(500).send("Internal Server Error");
-      throw error;
-    }
-    // 쿼리 결과를 JSON 형태로 응답
-    res.json(results);
+  
+  // /cafe-facilities 엔드포인트 핸들러
+  app.get("/cafe-facilities", (req, res) => {
+    // MySQL 쿼리: TouristSpots 테이블에서 food_category가 '카페'인 정보를 랜덤으로 2개 선택
+    const query = "SELECT * FROM TouristSpots WHERE food_category LIKE '%카페%'";
+    // 쿼리 실행
+    connection.query(query, (error, results) => {
+      if (error) {
+        res.status(500).send("Internal Server Error");
+        throw error;
+      }
+      // 쿼리 결과를 JSON 형태로 응답
+      res.json(results);
+    });
   });
-});
 // addspot HTML 폼 페이지 렌더링
 app.get("/addspot.html", (req, res) => {
   res.sendFile(__dirname + "/addspot.html");
@@ -686,77 +684,75 @@ app.post('/posts.html', (req, res) => {
 });
 // Q&A 목록을 반환하는 엔드포인트
 app.get("/qnaList", (req, res) => {
-  // 데이터베이스에서 Q&A 목록을 가져오는 쿼리
-  const selectQuery = `SELECT * FROM qna`;
-
-  connection.query(selectQuery, (error, results) => {
-    if (error) {
-      console.error("Error fetching Q&A list:", error);
-      res.status(500).json({ error: "Internal Server Error" });
-    } else {
-      // 결과를 JSON 형태로 반환
-      res.json(results);
-    }
-  });
-});
-// EJS 설정
-
-const reviews = [];
-
-// 리뷰 목록 가져오기
-app.get('/api/reviews2', (req, res) => {
-  const selectQuery = 'SELECT * FROM reviews'; // 적절한 쿼리로 변경해야 합니다.
-
-  connection.query(selectQuery, (error, results, fields) => {
+    // 데이터베이스에서 Q&A 목록을 가져오는 쿼리
+    const selectQuery = `SELECT * FROM qna`;
+  
+    connection.query(selectQuery, (error, results) => {
       if (error) {
-          console.error('MySQL 쿼리 오류:', error);
-          res.status(500).json({ error: '서버 오류' }); // 오류 응답을 보냅니다.
-          return;
+        console.error("Error fetching Q&A list:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+      } else {
+        // 결과를 JSON 형태로 반환
+        res.json(results);
       }
-
-      res.json(results); // 정상적인 경우에만 응답을 보냅니다.
-  });
-});
-
-
-
-// 리뷰 작성
-app.post('/api/reviews', (req, res) => {
-    const { placeName, reviewText, rating } = req.body;
-
-    if (!placeName || !reviewText || !rating) {
-        return res.status(400).json({ error: 'Invalid data' });
-    }
-
-    const newReview = { placeName, reviewText, rating };
-    reviews.push(newReview);
-
-    res.json(newReview);
-    const insertReviewQuery = `INSERT INTO Reviews (placeName, reviewText, rating) VALUES (?, ?, ?)`;
-    connection.query(insertReviewQuery, [placeName, reviewText, rating], (error, results) => {
-        if (error) {
-            console.error('Error inserting review into database:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        } else {
-            res.json(newReview);
-        }
     });
-});
+  });
+  const reviews = [];
 
-app.get("/reviewboard.html", (req, res) => {
-  res.sendFile(__dirname + "/reviewboard.html");
-   // 여기에서 데이터베이스에서 리뷰 목록을 가져오도록 수정
-   const selectReviewsQuery = `SELECT * FROM Reviews`;
-   connection.query(selectReviewsQuery, (error, results) => {
-       if (error) {
-           console.error('Error fetching reviews from database:', error);
-           res.status(500).json({ error: 'Internal Server Error' });
-       } else {
-           res.json(results);
-       }
-   });
-});
-
+  // 리뷰 목록 가져오기
+  app.get('/api/reviews2', (req, res) => {
+    const selectQuery = 'SELECT * FROM reviews'; // 적절한 쿼리로 변경해야 합니다.
+  
+    connection.query(selectQuery, (error, results, fields) => {
+        if (error) {
+            console.error('MySQL 쿼리 오류:', error);
+            res.status(500).json({ error: '서버 오류' }); // 오류 응답을 보냅니다.
+            return;
+        }
+  
+        res.json(results); // 정상적인 경우에만 응답을 보냅니다.
+    });
+  });
+  
+  
+  
+  // 리뷰 작성
+  app.post('/api/reviews', (req, res) => {
+      const { placeName, reviewText, rating } = req.body;
+  
+      if (!placeName || !reviewText || !rating) {
+          return res.status(400).json({ error: 'Invalid data' });
+      }
+  
+      const newReview = { placeName, reviewText, rating };
+      reviews.push(newReview);
+  
+      res.json(newReview);
+      const insertReviewQuery = `INSERT INTO Reviews (placeName, reviewText, rating) VALUES (?, ?, ?)`;
+      connection.query(insertReviewQuery, [placeName, reviewText, rating], (error, results) => {
+          if (error) {
+              console.error('Error inserting review into database:', error);
+              res.status(500).json({ error: 'Internal Server Error' });
+          } else {
+              res.json(newReview);
+          }
+      });
+  });
+  
+  app.get("/reviewboard.html", (req, res) => {
+    res.sendFile(__dirname + "/reviewboard.html");
+     // 여기에서 데이터베이스에서 리뷰 목록을 가져오도록 수정
+     const selectReviewsQuery = `SELECT * FROM Reviews`;
+     connection.query(selectReviewsQuery, (error, results) => {
+         if (error) {
+             console.error('Error fetching reviews from database:', error);
+             res.status(500).json({ error: 'Internal Server Error' });
+         } else {
+             res.json(results);
+         }
+     });
+  });
+  // EJS 설정
 app.set("view engine", "ejs");
 app.set("views", __dirname + "/views");
 // 서버 리스닝
