@@ -182,6 +182,42 @@
         submitButton.addEventListener("click", function () {
           checkForm();
         });
+      async function checkUsernameAvailability() {
+  const username = document.getElementById("username").value;
+  const usernameAvailabilityMessage = document.getElementById("usernameAvailabilityMessage");
+  const usernameAvailabilityError = document.getElementById("usernameAvailabilityError");
+
+  if (username.trim() === "") {
+    usernameAvailabilityMessage.textContent = "";
+    usernameAvailabilityError.textContent = "아이디를 입력하세요.";
+    return;
+  }
+
+  try {
+    // 서버에서 아이디 중복 확인
+    const response = await fetch('http://localhost:3000/check-username', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username }),
+    });
+
+    const isAvailable = await response.json();
+
+    if (isAvailable.available) {
+      usernameAvailabilityMessage.textContent = "사용 가능한 아이디입니다.";
+      usernameAvailabilityError.textContent = "";
+    } else {
+      usernameAvailabilityMessage.textContent = "";
+      usernameAvailabilityError.textContent = "이미 사용 중인 아이디입니다.";
+    }
+  } catch (error) {
+    console.error("Error checking username availability:", error);
+    usernameAvailabilityMessage.textContent = "";
+    usernameAvailabilityError.textContent = "서버 오류가 발생했습니다.";
+  }
+}
       
         function updateErrorMessage(inputElement, errorMessageId, regex, errorMessage) {
           const errorMessageElement = document.getElementById(errorMessageId);
