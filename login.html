@@ -84,9 +84,51 @@
             
             <!-- 비밀번호 찾기 버튼 -->
             <button onclick="findPassword()">비밀번호 찾기</button>
+            //google
+            <div class="g-signin2" data-onsuccess="GoogleSignIn"></div>
         </div>
     </div>
 
+        <script>
+        async function googleSignIn(googleUser) {
+    var profile = googleUser.getBasicProfile();
+    console.log('ID: ' + profile.getId());
+    console.log('Name: ' + profile.getName());
+    console.log('Image URL: ' + profile.getImageUrl());
+    console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+
+    var id_token = googleUser.getAuthResponse().id_token;
+    console.log("ID Token: " + id_token);
+
+    // 서버로 id_token을 전송하여 로그인 처리
+    try {
+        const response = await fetch('http://localhost:3000/google-login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id_token }),
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+            alert('로그인 성공!');
+            // 서버에서 사용자 정보를 데이터베이스에 저장한 후
+            // 성공 시 main.html로 리디렉션
+            window.location.href = "/main.html";
+        } else {
+            const errorData = await response.json();
+            console.error('로그인 실패:', errorData.message);
+            alert('로그인 실패');
+        }
+    } catch (error) {
+        console.error('에러:', error);
+        alert('로그인 도중 에러 발생');
+    }
+}
+    </script>
+    
         <script>
         function redirectToSignUpPage() {
             window.location.href = "SignUp.html";
