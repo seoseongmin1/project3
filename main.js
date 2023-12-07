@@ -9,6 +9,9 @@ const cookieParser = require("cookie-parser");
 const axios = require("axios"); // axios를 추가
 const app = express();
 const PORT = 3000;
+const { OAuth2Client } = require('google-auth-library');
+const CLIENT_ID = '529994508468-qdldos3sshd0gh5p7maub24ko2duikvl.apps.googleusercontent.com';
+const sessionSecret = 'node-session'; // 세션 시크릿 키로 대체
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.json());
@@ -53,6 +56,46 @@ connection.connect((err) => {
   console.log("Connected to MySQL");
 });
 // 구글연동
+app.post('/google-login', async (req, res) => {
+  const id_token = req.body.id_token;
+  const client = new OAuth2Client(CLIENT_ID);
+  try {
+      // id_token을 검증
+      const ticket = await client.verifyIdToken({
+          idToken: id_token,
+          audience: CLIENT_ID,
+      });
+
+      const payload = ticket.getPayload();
+      const userId = payload['sub'];
+      req.session.userId = userId;
+      
+      res.json({ success: true, message: '로그인 성공' });
+  } catch (error) {
+      console.error('ID 토큰 검증 실패:', error);
+      res.status(401).json({ success: false, message: '로그인 실패' });
+  }
+});
+app.get('/user-info', (req, res) => {
+  // 세션에서 사용자 정보 가져오기
+  const userId = req.session.userId;
+  if (userId) {
+      res.json({ userId });
+  } else {
+      res.status(401).json({ message: '사용자 정보 없음' });
+  }
+});
+app.post('/logout', (req, res) => {
+  // 세션에서 사용자 정보 삭제 (로그아웃)
+  req.session.destroy((err) => {
+      if (err) {
+          console.error('세션 삭제 실패:', err);
+          res.status(500).json({ message: '로그아웃 실패' });
+      } else {
+          res.json({ success: true, message: '로그아웃 성공' });
+      }
+  });
+});
 // const passport = require('passport');
 // const GoogleStrategy = require('passport-google-oauth20').Strategy;
 // app.use(passport.initialize());
